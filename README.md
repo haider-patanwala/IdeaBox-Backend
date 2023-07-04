@@ -9,6 +9,8 @@ npm install express
 npm install --save-dev nodemon
 touch server.js
 touch .gitignore
+npm i mongoose
+npm i dotenv
 npm i eslint 
 ```
 
@@ -58,3 +60,16 @@ npm init @eslint/config
 - [ ] Update specific Developer - PATCH `/developer/:id`
 - [ ] Delete specific Developer - DELETE `/developer
 /:id`
+
+---
+
+## About Backend Development :
+
+#### Main Project Structure 
+
+1. `server.js` - Entry point for the backend server
+2. `/routes` - Folder for all routes
+3. `/models` - Folder for all schemas 
+4. `/utils` - Folder for extra utility functions
+5. `/middleware` - Folder for middlewares
+6. `/config` - Folder for any configuration setups
