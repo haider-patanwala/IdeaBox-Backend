@@ -22,5 +22,7 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   rules: {
+    quotes: ["off", "double"],
+    "no-console": 0,
   },
 };
