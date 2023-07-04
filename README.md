@@ -30,3 +30,31 @@ npm init @eslint/config
 
 ---
 
+## API Index 
+
+### Business
+
+- [ ] Create new Business - POST `/businesses`
+- [ ] Retrive all Business - GET `/businesses`
+- [ ] Retrive specific Business - GET `/businesses/:id`
+- [ ] Update specific Business - PATCH `/businesses/:id`
+- [ ] Delete specific Business - DELETE `/businesses/:id`
+
+### Project
+
+- [ ] Create new Project - POST `/projects`
+- [ ] Retrive all Projects - GET `/projects`
+- [ ] Retrive specific Project - GET `/projects/:id`
+- [ ] Update specific Project - PATCH `/projects/:id`
+- [ ] Delete specific Project - DELETE `/projects/:id`
+
+
+### Developer
+
+
+- [ ] Create new Developer - POST `/developer`
+- [ ] Retrieve all Developers - GET `/developer`
+- [ ] Retrieve specific Developer - GET `/developer/:id`
+- [ ] Update specific Developer - PATCH `/developer/:id`
+- [ ] Delete specific Developer - DELETE `/developer
+/:id`
