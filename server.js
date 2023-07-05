@@ -12,6 +12,12 @@ dotenv.config();
 // ---- Async function. DB connection takes time and the app gets listed first from the last line ----
 connectToDatabase();
 
+// Middlwares :
+
+// to parse the JSON body from the request
+// without this middleware, the req.body object would be undefined
+app.use(express.json());
+
 // API routes :
 app.use("/developers", router.developerRouter);
 app.use("/projects", router.projectRouter);

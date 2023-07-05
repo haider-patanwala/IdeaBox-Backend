@@ -1,8 +1,15 @@
 const mongoose = require("mongoose");
+const { randomSecureKey } = require("../utiis/randomSecureKey");
 
 // creating a new object for projectSchema out of the `mongoose.Schema` class.
 const projectSchema = new mongoose.Schema(
   {
+    uid: {
+      type: String,
+      required: true,
+      unique: true,
+      default: randomSecureKey(),
+    },
     title: {
       type: String,
       required: true,

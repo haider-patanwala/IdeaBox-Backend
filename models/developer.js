@@ -1,7 +1,14 @@
 const mongoose = require("mongoose");
+const { randomSecureKey } = require("../utiis/randomSecureKey");
 
 const developerSchema = new mongoose.Schema(
   {
+    uid: {
+      type: String,
+      required: true,
+      unique: true,
+      default: randomSecureKey(),
+    },
     name: {
       type: String,
       required: true,
@@ -11,7 +18,7 @@ const developerSchema = new mongoose.Schema(
       required: true,
     },
     contact: {
-      type: String,
+      type: Number,
       required: true,
     },
     qualification: {
