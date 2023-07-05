@@ -11,7 +11,7 @@ const developerSchema = new mongoose.Schema(
       required: true,
     },
     contact: {
-      type: String,
+      type: Number,
       required: true,
     },
     qualification: {
