@@ -1,11 +1,12 @@
 const express = require("express");
 const Developer = require("../models/developer");
+const ApiError = require("../utiis/ApiError");
 
 // initializing the router with express router
 const router = express.Router();
 
 router.route("/")
-  .get((req, res) => {
+  .get((req, res, next) => {
     Developer.find()
       .then((documents) => {
         res.status(200).json({
@@ -14,15 +15,11 @@ router.route("/")
           errors: null,
         });
       })
-      .catch((error) => res.status(400).json({
-        message: "Error fetching developers.",
-        data: null,
-        errors: error,
-      }));
+      .catch((error) => next(new ApiError(400, "Error fetching developers.", error.toString())));
   });
 
 router.route("/auth/register")
-  .post((req, res) => {
+  .post((req, res, next) => {
     const developer = req.body;
 
     return Developer.create(developer)
@@ -31,15 +28,11 @@ router.route("/auth/register")
         data: document,
         errors: null,
       }))
-      .catch((error) => res.status(422).json({
-        message: "Error creating developer.",
-        data: null,
-        errors: error,
-      }));
+      .catch((error) => next(new ApiError(422, "Error creating developer.", error.toString())));
   });
 
 router.route("/:uid")
-  .get((req, res) => {
+  .get((req, res, next) => {
     Developer.findOne({ uid: req.params.uid })
       .then((document) => {
         if (!document) {
@@ -51,14 +44,10 @@ router.route("/:uid")
           errors: null,
         });
       })
-      .catch((error) => res.status(400).json({
-        message: "Error fetching developer",
-        data: null,
-        errors: error,
-      }));
+      .catch((error) => next(new ApiError(400, "Error fetching developer.", error.toString())));
   })
 
-  .patch((req, res) => {
+  .patch((req, res, next) => {
     const developer = req.body;
 
     // respone bydefault comes an old document so giving new:true option to get a fresh updated document.
@@ -74,14 +63,10 @@ router.route("/:uid")
           errors: null,
         });
       })
-      .catch((error) => res.status(422).json({
-        message: "Error updating developer.",
-        data: null,
-        errors: error,
-      }));
+      .catch((error) => next(new ApiError(422, "Error updating developer.", error.toString())));
   })
 
-  .delete((req, res) => {
+  .delete((req, res, next) => {
     Developer.deleteOne({ uid: req.params.uid })
       .then((document) => {
         if (document.deletedCount === 0) {
@@ -93,10 +78,6 @@ router.route("/:uid")
           errors: null,
         });
       })
-      .catch((error) => res.status(400).json({
-        message: "Error deleting developer.",
-        data: null,
-        errors: error,
-      }));
+      .catch((error) => next(new ApiError(400, "Error deleting developer.", error.toString())));
   });
 module.exports = router;
