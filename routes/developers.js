@@ -5,7 +5,21 @@ const Developer = require("../models/developer");
 const router = express.Router();
 
 router.route("/")
-  .get((req, res) => res.send("Getting developers.."));
+  .get((req, res) => {
+    Developer.find()
+      .then((documents) => {
+        res.status(200).json({
+          message: "Developers fetched successfully",
+          data: documents,
+          errors: null,
+        });
+      })
+      .catch((error) => res.status(400).json({
+        message: "Error fetching developers.",
+        data: null,
+        errors: error,
+      }));
+  });
 
 router.route("/auth/register")
   .post((req, res) => {
@@ -34,7 +48,7 @@ router.route("/:uid")
         res.status(200).json({
           message: "Developer fetched",
           data: document,
-          error: null,
+          errors: null,
         });
       })
       .catch((error) => res.status(400).json({
@@ -57,7 +71,7 @@ router.route("/:uid")
         return res.status(201).json({
           message: "Developer Updated",
           data: document,
-          error: null,
+          errors: null,
         });
       })
       .catch((error) => res.status(422).json({
@@ -76,7 +90,7 @@ router.route("/:uid")
         return res.status(200).json({
           message: "Developer deleted successfully.",
           data: document,
-          error: null,
+          errors: null,
         });
       })
       .catch((error) => res.status(400).json({
