@@ -32,7 +32,7 @@ router.route("/")
         });
       })
       .catch((error) => {
-        res.status(400).json({
+        res.status(422).json({
           message: "Error creating project.",
           data: null,
           errors: error,
@@ -66,14 +66,14 @@ router.route("/:uid")
     const project = req.body;
     Project.findOneAndUpdate({ uid: req.params.uid }, { ...project }, { new: true })
       .then((document) => {
-        res.status(201).json({
+        res.status(200).json({
           message: "Project updated succcessfully.",
           data: document,
           errors: null,
         });
       })
       .catch((error) => {
-        res.status(400).json({
+        res.status(422).json({
           message: "Error updating project.",
           data: null,
           errors: error,

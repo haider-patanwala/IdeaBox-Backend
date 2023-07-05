@@ -68,7 +68,7 @@ router.route("/:uid")
           throw Error("Developer not found.");
         }
 
-        return res.status(201).json({
+        return res.status(200).json({
           message: "Developer Updated",
           data: document,
           errors: null,

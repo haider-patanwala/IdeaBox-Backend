@@ -31,7 +31,7 @@ router.route("/")
         });
       })
       .catch((error) => {
-        res.status(400).json({
+        res.status(422).json({
           message: "Error creating organization.",
           data: null,
           errors: error,
@@ -53,7 +53,7 @@ router.route("/:uid")
         });
       })
       .catch((error) => {
-        res.status(422).json({
+        res.status(400).json({
           message: "Error fetching organization.",
           data: null,
           errors: error,
@@ -76,7 +76,7 @@ router.route("/:uid")
         });
       })
       .catch((error) => {
-        res.status(400).json({
+        res.status(422).json({
           message: "Error updating organization.",
           data: null,
           errors: error,
