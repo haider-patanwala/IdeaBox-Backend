@@ -47,6 +47,8 @@ router.route("/:uid")
 
   .patch((req, res, next) => {
     const project = req.body;
+
+    // respone bydefault comes an old document so giving new:true option to get a fresh updated document.
     Project.findOneAndUpdate({ uid: req.params.uid }, { ...project }, { new: true })
       .then((document) => {
         if (!document) {

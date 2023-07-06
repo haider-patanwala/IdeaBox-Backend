@@ -47,6 +47,7 @@ router.route("/:uid")
   .patch((req, res, next) => {
     const organization = req.body;
 
+    // respone bydefault comes an old document so giving new:true option to get a fresh updated document.
     Organization.findOneAndUpdate({ uid: req.params.uid }, { ...organization }, { new: true })
       .then((document) => {
         if (!document) {
@@ -63,7 +64,10 @@ router.route("/:uid")
   .delete((req, res, next) => {
     Organization.findOneAndDelete({ uid: req.params.uid })
       .then((document) => {
-        if (!document) {
+        // deleteOne method doesnt return the found/deleted document
+        // but it returns a key `deletedCount` with value 0 or 1
+        // so if it is 0 means nothing was deleted means the documen was not found to delete.
+        if (!document.deletedCount) {
           throw Error("Organization not found");
         }
         return res.status(200).json({

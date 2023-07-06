@@ -1,9 +1,6 @@
-const express = require("express");
+const router = require("express").Router();
 const Developer = require("../models/developer");
 const ApiError = require("../utiis/ApiError");
-
-// initializing the router with express router
-const router = express.Router();
 
 router.route("/")
   .get((req, res, next) => {
@@ -23,11 +20,13 @@ router.route("/auth/register")
     const developer = req.body;
 
     return Developer.create(developer)
-      .then((document) => res.status(201).json({
-        message: "Developer created successfully.",
-        data: document,
-        errors: null,
-      }))
+      .then((document) => {
+        res.status(201).json({
+          message: "Developer created successfully.",
+          data: document,
+          errors: null,
+        });
+      })
       .catch((error) => next(new ApiError(422, "Error creating developer.", error.toString())));
   });
 
@@ -36,10 +35,10 @@ router.route("/:uid")
     Developer.findOne({ uid: req.params.uid })
       .then((document) => {
         if (!document) {
-          throw Error("Developer doesn't exist");
+          throw Error("Developer not found");
         }
         res.status(200).json({
-          message: "Developer fetched",
+          message: "Developer fetched successfully.",
           data: document,
           errors: null,
         });
@@ -69,6 +68,9 @@ router.route("/:uid")
   .delete((req, res, next) => {
     Developer.deleteOne({ uid: req.params.uid })
       .then((document) => {
+        // deleteOne method doesnt return the found/deleted document
+        // but it returns a key `deletedCount` with value 0 or 1
+        // so if it is 0 means nothing was deleted means the documen was not found to delete.
         if (document.deletedCount === 0) {
           throw Error("Developer not found.");
         }
