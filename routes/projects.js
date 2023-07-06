@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const Project = require("../models/project");
-const ApiError = require("../utiis/ApiError");
+const ApiError = require("../utils/ApiError");
 
 router.route("/")
   .get((req, res, next) => {

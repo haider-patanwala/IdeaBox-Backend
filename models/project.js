@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { randomSecureKey } = require("../utiis/randomSecureKey");
+const { randomSecureKey } = require("../utils/randomSecureKey");
 
 // creating a new object for projectSchema out of the `mongoose.Schema` class.
 const projectSchema = new mongoose.Schema(

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { randomSecureKey } = require("../utiis/randomSecureKey");
+const { randomSecureKey } = require("../utils/randomSecureKey");
 
 const organizationSchema = new mongoose.Schema(
   {
