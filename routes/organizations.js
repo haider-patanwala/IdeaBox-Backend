@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const Organization = require("../models/organization");
+const ApiError = require("../utiis/ApiError");
 
 router.route("/")
-  .get((req, res) => {
+  .get((req, res, next) => {
     Organization.find()
       .then((documents) => {
         res.status(200).json({
@@ -11,16 +12,10 @@ router.route("/")
           errors: null,
         });
       })
-      .catch((error) => {
-        res.status(400).json({
-          message: "Error fetching organizations.",
-          data: null,
-          errors: error,
-        });
-      });
+      .catch((error) => next(new ApiError(400, "Error fetching organizations.", error.toString())));
   })
 
-  .post((req, res) => {
+  .post((req, res, next) => {
     const organization = req.body;
     Organization.create(organization)
       .then((document) => {
@@ -30,17 +25,11 @@ router.route("/")
           errors: null,
         });
       })
-      .catch((error) => {
-        res.status(422).json({
-          message: "Error creating organization.",
-          data: null,
-          errors: error,
-        });
-      });
+      .catch((error) => next(new ApiError(422, "Error creating organization.", error.toString())));
   });
 
 router.route("/:uid")
-  .get((req, res) => {
+  .get((req, res, next) => {
     Organization.findOne({ uid: req.params.uid })
       .then((document) => {
         if (!document) {
@@ -52,18 +41,13 @@ router.route("/:uid")
           errors: null,
         });
       })
-      .catch((error) => {
-        res.status(400).json({
-          message: "Error fetching organization.",
-          data: null,
-          errors: error,
-        });
-      });
+      .catch((error) => next(new ApiError(400, "Error fetching organization.", error.toString())));
   })
 
-  .patch((req, res) => {
+  .patch((req, res, next) => {
     const organization = req.body;
 
+    // respone bydefault comes an old document so giving new:true option to get a fresh updated document.
     Organization.findOneAndUpdate({ uid: req.params.uid }, { ...organization }, { new: true })
       .then((document) => {
         if (!document) {
@@ -75,18 +59,15 @@ router.route("/:uid")
           errors: null,
         });
       })
-      .catch((error) => {
-        res.status(422).json({
-          message: "Error updating organization.",
-          data: null,
-          errors: error,
-        });
-      });
+      .catch((error) => next(new ApiError(422, "Error updating organization.", error.toString())));
   })
-  .delete((req, res) => {
+  .delete((req, res, next) => {
     Organization.findOneAndDelete({ uid: req.params.uid })
       .then((document) => {
-        if (!document) {
+        // deleteOne method doesnt return the found/deleted document
+        // but it returns a key `deletedCount` with value 0 or 1
+        // so if it is 0 means nothing was deleted means the documen was not found to delete.
+        if (!document.deletedCount) {
           throw Error("Organization not found");
         }
         return res.status(200).json({
@@ -95,13 +76,7 @@ router.route("/:uid")
           errors: null,
         });
       })
-      .catch((error) => {
-        res.status(400).json({
-          message: "Error deleting organization",
-          data: null,
-          errors: error,
-        });
-      });
+      .catch((error) => next(new ApiError(400, "Error deleting organization.", error.toString())));
   });
 
 module.exports = router;

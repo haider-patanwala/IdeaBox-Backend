@@ -7,7 +7,12 @@ const developerSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      default: randomSecureKey(),
+      // default is given a callback
+      // since for every instance, a new uid needs to be generated from this model schema
+      // without callback, there would be error of
+      // `"MongoServerError: E11000 duplicate key error collection`
+      // for continous creation of document with same body.
+      default: () => randomSecureKey(),
     },
     name: {
       type: String,
