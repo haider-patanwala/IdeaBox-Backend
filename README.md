@@ -34,31 +34,31 @@ npm init @eslint/config
 
 ## API Index 
 
-### Business
+### Organization
 
-- [ ] Create new Business - POST `/businesses`
-- [ ] Retrive all Business - GET `/businesses`
-- [ ] Retrive specific Business - GET `/businesses/:id`
-- [ ] Update specific Business - PATCH `/businesses/:id`
-- [ ] Delete specific Business - DELETE `/businesses/:id`
+- [x] Create new Organization - POST `/organizations`
+- [x] Retrive all Organization - GET `/organizations`
+- [x] Retrive specific Organization - GET `/organizations/:id`
+- [x] Update specific Organization - PATCH `/organizations/:id`
+- [x] Delete specific Organization - DELETE `/organizations/:id`
 
 ### Project
 
-- [ ] Create new Project - POST `/projects`
-- [ ] Retrive all Projects - GET `/projects`
-- [ ] Retrive specific Project - GET `/projects/:id`
-- [ ] Update specific Project - PATCH `/projects/:id`
-- [ ] Delete specific Project - DELETE `/projects/:id`
+- [x] Create new Project - POST `/projects`
+- [x] Retrive all Projects - GET `/projects`
+- [x] Retrive specific Project - GET `/projects/:id`
+- [x] Update specific Project - PATCH `/projects/:id`
+- [x] Delete specific Project - DELETE `/projects/:id`
 
 
 ### Developer
 
 
-- [ ] Create new Developer - POST `/developer`
-- [ ] Retrieve all Developers - GET `/developer`
-- [ ] Retrieve specific Developer - GET `/developer/:id`
-- [ ] Update specific Developer - PATCH `/developer/:id`
-- [ ] Delete specific Developer - DELETE `/developer
+- [x] Create new Developer - POST `/developer`
+- [x] Retrieve all Developers - GET `/developer`
+- [x] Retrieve specific Developer - GET `/developer/:id`
+- [x] Update specific Developer - PATCH `/developer/:id`
+- [x] Delete specific Developer - DELETE `/developer
 /:id`
 
 ---
