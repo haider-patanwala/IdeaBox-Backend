@@ -14,7 +14,11 @@ const developerSchema = new mongoose.Schema(
       // for continous creation of document with same body.
       default: () => randomSecureKey(),
     },
-    name: {
+    fname: {
+      type: String,
+      required: true,
+    },
+    lname: {
       type: String,
       required: true,
     },
@@ -22,7 +26,7 @@ const developerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    contact: {
+    phone: {
       type: Number,
       required: true,
     },
@@ -30,6 +34,18 @@ const developerSchema = new mongoose.Schema(
       type: String,
     },
     skills: {
+      type: String,
+    },
+    city: {
+      type: String,
+    },
+    openToWork: {
+      type: Boolean,
+    },
+    linkedin: {
+      type: String,
+    },
+    github: {
       type: String,
     },
   },

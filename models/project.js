@@ -23,6 +23,24 @@ const projectSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    techStack: {
+      type: String,
+    },
+    featured: {
+      type: Boolean,
+    },
+    board: {
+      type: String,
+    },
+    lead: {
+      type: String,
+    },
+    image: {
+      type: String,
+    },
+    timeframe: {
+      type: String,
+    },
   },
   {
     timestamps: true, // to create created_at & updated_at fields

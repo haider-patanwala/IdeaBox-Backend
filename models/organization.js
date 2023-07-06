@@ -21,6 +21,12 @@ const organizationSchema = new mongoose.Schema(
     about: {
       type: String,
     },
+    website: {
+      type: String,
+    },
+    domain: {
+      type: String,
+    },
   },
   {
     timestamps: true,
