@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { randomSecureKey } = require("../utiis/randomSecureKey");
+const { organizationUID } = require("../utils/randomSecureKey");
 
 const organizationSchema = new mongoose.Schema(
   {
@@ -12,7 +12,7 @@ const organizationSchema = new mongoose.Schema(
       // without callback, there would be error of
       // `"MongoServerError: E11000 duplicate key error collection`
       // for continous creation of document with same body.
-      default: () => randomSecureKey(),
+      default: () => organizationUID(),
     },
     name: {
       type: String,
@@ -21,6 +21,17 @@ const organizationSchema = new mongoose.Schema(
     about: {
       type: String,
     },
+    website: {
+      type: String,
+    },
+    domain: {
+      type: String,
+    },
+    org_projects: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "projects",
+    },
+    ],
   },
   {
     timestamps: true,

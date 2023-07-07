@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { randomSecureKey } = require("../utiis/randomSecureKey");
+const { developerUID } = require("../utils/randomSecureKey");
 
 const developerSchema = new mongoose.Schema(
   {
@@ -12,9 +12,13 @@ const developerSchema = new mongoose.Schema(
       // without callback, there would be error of
       // `"MongoServerError: E11000 duplicate key error collection`
       // for continous creation of document with same body.
-      default: () => randomSecureKey(),
+      default: () => developerUID(),
     },
-    name: {
+    fname: {
+      type: String,
+      required: true,
+    },
+    lname: {
       type: String,
       required: true,
     },
@@ -22,7 +26,7 @@ const developerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    contact: {
+    phone: {
       type: Number,
       required: true,
     },
@@ -32,6 +36,27 @@ const developerSchema = new mongoose.Schema(
     skills: {
       type: String,
     },
+    city: {
+      type: String,
+    },
+    openToWork: {
+      type: Boolean,
+    },
+    linkedin: {
+      type: String,
+    },
+    github: {
+      type: String,
+    },
+    dev_organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "organizations", // using ref key to establish a foreign key relationship with primary key(_id) of refereced model
+    },
+    dev_projects: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "projects",
+    },
+    ],
   },
   {
     timestamps: true,

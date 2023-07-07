@@ -1,10 +1,11 @@
 const router = require("express").Router();
 const Developer = require("../models/developer");
-const ApiError = require("../utiis/ApiError");
+const ApiError = require("../utils/ApiError");
 
 router.route("/")
   .get((req, res, next) => {
-    Developer.find()
+    // `populate` is used to fetch the foreign key referenced document in the find response based on the keys passed as an argument to the method.
+    Developer.find().populate("dev_organization").populate("dev_projects")
       .then((documents) => {
         res.status(200).json({
           message: "Developers fetched successfully",
@@ -32,7 +33,7 @@ router.route("/auth/register")
 
 router.route("/:uid")
   .get((req, res, next) => {
-    Developer.findOne({ uid: req.params.uid })
+    Developer.findOne({ uid: req.params.uid }).populate("dev_organization").populate("dev_projects")
       .then((document) => {
         if (!document) {
           throw Error("Developer not found");

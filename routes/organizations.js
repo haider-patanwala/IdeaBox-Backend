@@ -1,10 +1,10 @@
 const router = require("express").Router();
 const Organization = require("../models/organization");
-const ApiError = require("../utiis/ApiError");
+const ApiError = require("../utils/ApiError");
 
 router.route("/")
   .get((req, res, next) => {
-    Organization.find()
+    Organization.find().populate("org_projects")
       .then((documents) => {
         res.status(200).json({
           message: "Fetched organization successfully.",
@@ -30,7 +30,7 @@ router.route("/")
 
 router.route("/:uid")
   .get((req, res, next) => {
-    Organization.findOne({ uid: req.params.uid })
+    Organization.findOne({ uid: req.params.uid }).populate("org_projects")
       .then((document) => {
         if (!document) {
           throw Error("Organization not found.");

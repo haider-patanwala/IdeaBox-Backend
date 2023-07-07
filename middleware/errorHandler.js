@@ -1,4 +1,4 @@
-const ApiError = require("../utiis/ApiError");
+const ApiError = require("../utils/ApiError");
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (err, req, res, next) => {

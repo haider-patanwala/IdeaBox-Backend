@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { randomSecureKey } = require("../utiis/randomSecureKey");
+const { projectUID } = require("../utils/randomSecureKey");
 
 // creating a new object for projectSchema out of the `mongoose.Schema` class.
 const projectSchema = new mongoose.Schema(
@@ -13,7 +13,7 @@ const projectSchema = new mongoose.Schema(
       // without callback, there would be error of
       // `"MongoServerError: E11000 duplicate key error collection`
       // for continous creation of document with same body.
-      default: () => randomSecureKey(),
+      default: () => projectUID(),
     },
     title: {
       type: String,
@@ -22,6 +22,31 @@ const projectSchema = new mongoose.Schema(
     description: {
       type: String,
       required: true,
+    },
+    techStack: {
+      type: String,
+    },
+    featured: {
+      type: Boolean,
+      default: false,
+    },
+    board: {
+      type: String,
+      default: "Scrum",
+    },
+    image: {
+      type: String,
+    },
+    timeframe: {
+      type: String,
+    },
+    lead: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "developers", // using ref key to establish a foreign key relationship with primary key(_id) of refereced model
+    },
+    proj_organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "organizations",
     },
   },
   {
