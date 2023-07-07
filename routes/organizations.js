@@ -30,7 +30,7 @@ router.route("/")
 
 router.route("/:uid")
   .get((req, res, next) => {
-    Organization.findOne({ uid: req.params.uid })
+    Organization.findOne({ uid: req.params.uid }).populate("org_projects")
       .then((document) => {
         if (!document) {
           throw Error("Organization not found.");

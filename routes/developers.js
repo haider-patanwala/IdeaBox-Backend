@@ -33,7 +33,7 @@ router.route("/auth/register")
 
 router.route("/:uid")
   .get((req, res, next) => {
-    Developer.findOne({ uid: req.params.uid })
+    Developer.findOne({ uid: req.params.uid }).populate("dev_organization").populate("dev_projects")
       .then((document) => {
         if (!document) {
           throw Error("Developer not found");
