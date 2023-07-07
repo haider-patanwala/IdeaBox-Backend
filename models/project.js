@@ -28,18 +28,25 @@ const projectSchema = new mongoose.Schema(
     },
     featured: {
       type: Boolean,
+      default: false,
     },
     board: {
       type: String,
-    },
-    lead: {
-      type: String,
+      default: "Scrum",
     },
     image: {
       type: String,
     },
     timeframe: {
       type: String,
+    },
+    lead: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "developers", // using ref key to establish a foreign key relationship with primary key(_id) of refereced model
+    },
+    proj_organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "organizations",
     },
   },
   {

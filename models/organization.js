@@ -27,6 +27,11 @@ const organizationSchema = new mongoose.Schema(
     domain: {
       type: String,
     },
+    org_projects: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "projects",
+    },
+    ],
   },
   {
     timestamps: true,

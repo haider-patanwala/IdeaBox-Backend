@@ -48,6 +48,15 @@ const developerSchema = new mongoose.Schema(
     github: {
       type: String,
     },
+    dev_organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "organizations", // using ref key to establish a foreign key relationship with primary key(_id) of refereced model
+    },
+    dev_projects: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "projects",
+    },
+    ],
   },
   {
     timestamps: true,
