@@ -4,7 +4,7 @@ const ApiError = require("../utils/ApiError");
 
 router.route("/")
   .get((req, res, next) => {
-    Organization.find()
+    Organization.find().populate("org_projects")
       .then((documents) => {
         res.status(200).json({
           message: "Fetched organization successfully.",

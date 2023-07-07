@@ -4,7 +4,8 @@ const ApiError = require("../utils/ApiError");
 
 router.route("/")
   .get((req, res, next) => {
-    Developer.find()
+    // `populate` is used to fetch the foreign key referenced document in the find response based on the keys passed as an argument to the method.
+    Developer.find().populate("dev_organization").populate("dev_projects")
       .then((documents) => {
         res.status(200).json({
           message: "Developers fetched successfully",
