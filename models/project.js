@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { randomSecureKey } = require("../utils/randomSecureKey");
+const { projectUID } = require("../utils/randomSecureKey");
 
 // creating a new object for projectSchema out of the `mongoose.Schema` class.
 const projectSchema = new mongoose.Schema(
@@ -13,7 +13,7 @@ const projectSchema = new mongoose.Schema(
       // without callback, there would be error of
       // `"MongoServerError: E11000 duplicate key error collection`
       // for continous creation of document with same body.
-      default: () => randomSecureKey(),
+      default: () => projectUID(),
     },
     title: {
       type: String,
