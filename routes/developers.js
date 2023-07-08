@@ -1,6 +1,9 @@
 const router = require("express").Router();
+const { promisify } = require("util");
+const cloudinary = require("cloudinary").v2;
 const Developer = require("../models/developer");
 const ApiError = require("../utils/ApiError");
+// const { stringify } = require("querystring");
 
 router.route("/")
   .get((req, res, next) => {
@@ -19,16 +22,35 @@ router.route("/")
 router.route("/auth/register")
   .post((req, res, next) => {
     const developer = req.body;
+    const file = req.files.photo;
 
-    return Developer.create(developer)
-      .then((document) => {
-        res.status(201).json({
-          message: "Developer created successfully.",
-          data: document,
-          errors: null,
+    try {
+      const cloudinaryUpload = promisify(cloudinary.uploader.upload);
+      return cloudinaryUpload(file.tempFilePath)
+        .then((result) => {
+          developer.profile_pic = result.url;
+          return Developer.create(developer);
+        })
+        .then((document) => {
+          res.status(201).json({
+            message: "Developer created successfully.",
+            data: document,
+            errors: null,
+          });
+        })
+        .catch((error) => {
+          console.log("Error --", error);
+          // this if condition is for cloudinaryUpload(file.tempFilePath) promise as it returns error in object form with key `http_code` over here so handling it accordingly for that specific argument of tempFilePath
+          // a typo in `tempFilePath` spelling will trigger satisfy this `if` block.
+          if (error.http_code) {
+            next(new ApiError(422, "Error creating developer!", JSON.stringify(error)));
+          } else {
+            next(new ApiError(422, "Error creating developer.", error.toString()));
+          }
         });
-      })
-      .catch((error) => next(new ApiError(422, "Error creating developer.", error.toString())));
+    } catch (error) {
+      return next(new ApiError(422, "Error creating developer..", error.toString()));
+    }
   });
 
 router.route("/:uid")
