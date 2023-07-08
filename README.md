@@ -73,28 +73,3 @@ npm init @eslint/config
 4. `/utils` - Folder for extra utility functions
 5. `/middleware` - Folder for middlewares
 6. `/config` - Folder for any configuration setups
-
----
-
-#### Other setups :
-
-```bash
-npm i express-fileupload
-npm i cloudinary
-```
-
----
-
-developer schema :
-1. relation "organization" (new/option)...
-2. add "projects" - role.
-
-project schema :
-1. add "image"
-2. add relation with "org"
-3. add relation with "developer"(can count how many are there)
-
-ROUTES :
-
-1. Sign in for developer & org
-
