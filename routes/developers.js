@@ -40,7 +40,7 @@ router.route("/auth/register")
           deleteTmp(file);
         })
         .catch((error) => {
-          console.log("Error --", error);
+          // console.log("Error --", error);
           // this if condition is for cloudinaryUpload(file.tempFilePath) promise as it returns error in object form with key `http_code` over here so handling it accordingly for that specific argument of tempFilePath
           // a typo in `tempFilePath` spelling will trigger satisfy this `if` block.
           if (error.http_code) {
