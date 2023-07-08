@@ -1,6 +1,9 @@
 const router = require("express").Router();
+const cloudinary = require("cloudinary").v2;
+const { promisify } = require("util");
 const Organization = require("../models/organization");
 const ApiError = require("../utils/ApiError");
+const { deleteTmp } = require("../utils/deleteTmp");
 
 router.route("/")
   .get((req, res, next) => {
@@ -17,15 +20,36 @@ router.route("/")
 
   .post((req, res, next) => {
     const organization = req.body;
-    Organization.create(organization)
-      .then((document) => {
-        res.status(201).json({
-          message: "Organization created successfully.",
-          data: document,
-          errors: null,
+    const file = req.files.photo;
+
+    try {
+      const cloudinaryUpload = promisify(cloudinary.uploader.upload);
+      return cloudinaryUpload(file.tempFilePath)
+        .then((result) => {
+          organization.banner_img = result.url;
+          return Organization.create(organization);
+        })
+        .then((document) => {
+          res.status(201).json({
+            message: "Organization created successfully.",
+            data: document,
+            errors: null,
+          });
+          deleteTmp(file);
+        })
+        .catch((error) => {
+          // console.log("Error --", error);
+          // this if condition is for cloudinaryUpload(file.tempFilePath) promise as it returns error in object form with key `http_code` over here so handling it accordingly for that specific argument of tempFilePath
+          // a typo in `tempFilePath` spelling will trigger satisfy this `if` block.
+          if (error.http_code) {
+            next(new ApiError(422, "Error creating organization!", JSON.stringify(error)));
+          } else {
+            next(new ApiError(422, "Error creating organization.", error.toString()));
+          }
         });
-      })
-      .catch((error) => next(new ApiError(422, "Error creating organization.", error.toString())));
+    } catch (error) {
+      return next(new ApiError(422, "Error creating organization..", error.toString()));
+    }
   });
 
 router.route("/:uid")
