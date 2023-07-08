@@ -57,6 +57,9 @@ const developerSchema = new mongoose.Schema(
       ref: "projects",
     },
     ],
+    profile_pic: {
+      type: String,
+    },
   },
   {
     timestamps: true,
