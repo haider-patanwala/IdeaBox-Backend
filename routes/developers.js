@@ -3,7 +3,7 @@ const { promisify } = require("util");
 const cloudinary = require("cloudinary").v2;
 const Developer = require("../models/developer");
 const ApiError = require("../utils/ApiError");
-// const { stringify } = require("querystring");
+const { deleteTmp } = require("../utils/deleteTmp");
 
 router.route("/")
   .get((req, res, next) => {
@@ -37,6 +37,7 @@ router.route("/auth/register")
             data: document,
             errors: null,
           });
+          deleteTmp(file);
         })
         .catch((error) => {
           console.log("Error --", error);
