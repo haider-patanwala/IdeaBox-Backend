@@ -32,6 +32,9 @@ const organizationSchema = new mongoose.Schema(
       ref: "projects",
     },
     ],
+    banner_img: {
+      type: "String",
+    },
   },
   {
     timestamps: true,
