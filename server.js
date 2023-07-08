@@ -36,6 +36,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Middleware 3 -
+// it is a convenient handle file uploads in your Express app
+// It simplifies the process of accepting files sent as part of a multipart/form-data request.
 app.use(fileUpload({
   useTempFiles: true,
 }));
