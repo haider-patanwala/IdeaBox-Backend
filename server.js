@@ -1,5 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const fileUpload = require("express-fileupload");
+const cloudinary = require("cloudinary").v2;
 const router = require("./routes/index");
 const connectToDatabase = require("./config/db");
 const errorHandler = require("./middleware/errorHandler");
@@ -7,8 +9,18 @@ const errorHandler = require("./middleware/errorHandler");
 // initializing the express app
 const app = express();
 
+// Configurations :
+
 // Loads .env file contents into process.env
 dotenv.config();
+
+// cloudinary config
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+  secure: true,
+});
 
 // ---- Async function. DB connection takes time and the app gets listed first from the last line ----
 connectToDatabase();
@@ -23,12 +35,17 @@ app.use(express.json());
 // enables Express.js to automatically parse this URL-encoded data and make it available in the req.body object
 app.use(express.urlencoded({ extended: true }));
 
+// Middleware 3 -
+app.use(fileUpload({
+  useTempFiles: true,
+}));
+
 // API routes :
 app.use("/developers", router.developerRouter);
 app.use("/projects", router.projectRouter);
 app.use("/organizations", router.organizationRouter);
 
-// Middlware 3 - A global error handler
+// Middlware 4 - A global error handler
 // do not call like ()
 // if there are syntactical erros in the req.body then even beffore the request gets process, the body error is handled over by this middleware otherwise the server get freeze due to unhandled error.... etc etc such type of unexpected errors can be handled by this middleware
 app.use(errorHandler);
