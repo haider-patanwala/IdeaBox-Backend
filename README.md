@@ -74,7 +74,7 @@ npm init @eslint/config
 4. `/utils` - Folder for extra utility functions
 5. `/middleware` - Folder for middlewares
 6. `/config` - Folder for any configuration setups
-
+7. `/controllers` - To manage some business logic out of routes.
 ---
 
 #### Other setups :
@@ -94,8 +94,3 @@ npm i jsonwebtoken
 developer schema :
 1. relation "organization" (new/option)...
 2. add "projects" - role.(figure out this)
-
-ROUTES :
-
-1. Sign in for developer & org
-
