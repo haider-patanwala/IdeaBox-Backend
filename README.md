@@ -34,9 +34,18 @@ npm init @eslint/config
 
 ## API Index 
 
+### Developer
+
+
+- [x] Register new Developer - POST `/developers/auth/register`
+- [x] Retrieve all Developers - GET `/developers`
+- [x] Retrieve specific Developer - GET `/developers/:id`
+- [x] Update specific Developer - PATCH `/developers/:id`
+- [x] Delete specific Developer - DELETE `/developers/:id`
+
 ### Organization
 
-- [x] Create new Organization - POST `/organizations`
+- [x] Register new Organization - POST `/organizations/auth/register`
 - [x] Retrive all Organization - GET `/organizations`
 - [x] Retrive specific Organization - GET `/organizations/:id`
 - [x] Update specific Organization - PATCH `/organizations/:id`
@@ -51,16 +60,6 @@ npm init @eslint/config
 - [x] Delete specific Project - DELETE `/projects/:id`
 
 
-### Developer
-
-
-- [x] Create new Developer - POST `/developer`
-- [x] Retrieve all Developers - GET `/developer`
-- [x] Retrieve specific Developer - GET `/developer/:id`
-- [x] Update specific Developer - PATCH `/developer/:id`
-- [x] Delete specific Developer - DELETE `/developer
-/:id`
-
 ---
 
 ## About Backend Development :
@@ -73,3 +72,26 @@ npm init @eslint/config
 4. `/utils` - Folder for extra utility functions
 5. `/middleware` - Folder for middlewares
 6. `/config` - Folder for any configuration setups
+
+---
+
+#### Other setups :
+
+```bash
+npm i express-fileupload
+npm i express-validator
+npm i cloudinary
+```
+
+---
+
+#### Todo :
+
+developer schema :
+1. relation "organization" (new/option)...
+2. add "projects" - role.(figure out this)
+
+ROUTES :
+
+1. Sign in for developer & org
+
