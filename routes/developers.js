@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { promisify } = require("util");
 const cloudinary = require("cloudinary").v2;
-const { body } = require("express-validator");
+const { body, validationResult } = require("express-validator");
 const Developer = require("../models/developer");
 const ApiError = require("../utils/ApiError");
 // const { deleteTmp } = require("../utils/deleteTmp");
@@ -25,7 +25,12 @@ router.route("/auth/register")
   .post(body("developer.password").isLength({ min: 8, max: 16 }), (req, res, next) => {
     const developer = req.body;
     const file = req.files ? req.files.photo : null;
+    const errors = validationResult(req);
 
+    if (!errors.isEmpty()) {
+      const { msg, path } = errors.array()[0];
+      return next(new ApiError(400, "Developer registeration failed. Provide password with min 8, max 16 characters. ", `${path} : ${msg}`));
+    }
     try {
       if (file) {
         const cloudinaryUpload = promisify(cloudinary.uploader.upload);
