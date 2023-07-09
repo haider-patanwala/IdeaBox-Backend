@@ -11,6 +11,7 @@ const controller = require("../controllers/developer");
 require('dotenv').config();
 
 const rounds = process.env.SALT_ROUNDS;
+const secret = process.env.JWT_SECRET;
 
 router.route("/")
   .get((req, res, next) => {
@@ -67,6 +68,33 @@ router.route("/auth/register")
     }
   });
 
+router.route("/auth/login")
+  .post((req, res, next) => {
+    const { email, password } = req.body;
+    Developer.findOne({ email: req.body.email })
+      .then(async (document) => {
+        if (!document) {
+          throw Error("Developer doesn't exist.");
+        }
+        // this compare function returns a boolean value here.
+        const passwordCompare = await bcrypt.compare(password, document.password);
+        if (!passwordCompare) {
+          throw Error("Incorrect Password.");
+        }
+
+        const token = jwt.sign({ email }, secret);
+        console.log("token - ", token);
+        res.status(200).json({
+          message: "Developer login successfull.",
+          data: {
+            access_token: token,
+            developer: document,
+          },
+          errors: null,
+        });
+      })
+      .catch((error) => next(new ApiError(422, "Error logging in Developer.", error.toString())));
+  });
 router.route("/:uid")
   .get((req, res, next) => {
     Developer.findOne({ uid: req.params.uid }).populate("dev_organization").populate("dev_projects")
