@@ -35,6 +35,10 @@ const organizationSchema = new mongoose.Schema(
     banner_img: {
       type: "String",
     },
+    password: {
+      type: "String",
+      required: true,
+    },
   },
   {
     timestamps: true,
