@@ -38,7 +38,7 @@ router.route("/auth/register")
     }
     try {
       const salt = await bcrypt.genSalt(parseInt(rounds, 10));
-      securedPassword = await bcrypt.hash(req.body.password, salt);
+      const securedPassword = await bcrypt.hash(req.body.password, salt);
 
       const securedDeveloper = { ...developer, password: securedPassword };
 
