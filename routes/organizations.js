@@ -3,14 +3,14 @@ const cloudinary = require("cloudinary").v2;
 const { promisify } = require("util");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const Organization = require("../models/organization");
 const ApiError = require("../utils/ApiError");
 const controller = require("../controllers/organization");
 require("dotenv").config();
 
 const rounds = process.env.SALT_ROUNDS;
-// const secret = process.env.JWT_SECRET;
+const secret = process.env.JWT_SECRET;
 
 router.route("/")
   .get((req, res, next) => {
@@ -23,8 +23,9 @@ router.route("/")
         });
       })
       .catch((error) => next(new ApiError(400, "Error fetching organizations.", error.toString())));
-  })
+  });
 
+router.route("/auth/register")
   .post(body("password").isLength({ min: 8, max: 16 }), async (req, res, next) => {
     const organization = req.body;
     const { password } = req.body;
@@ -67,6 +68,34 @@ router.route("/")
     } catch (error) {
       return next(new ApiError(422, "Error creating organization..", error.toString()));
     }
+  });
+
+router.route("/auth/login")
+  .post((req, res, next) => {
+    const { uid, password } = req.body;
+    Organization.findOne({ uid: req.body.uid })
+      .then(async (document) => {
+        if (!document) {
+          throw Error("Organization not found.");
+        }
+        const passwordCompare = await bcrypt.compare(password, document.password);
+        if (!passwordCompare) {
+          throw Error("Incorrect Password.");
+        }
+
+        const token = jwt.sign({ uid }, secret);
+        res.status(200).json({
+          message: "Organization logged in successfully.",
+          data: {
+            access_token: token,
+            developer: document,
+          },
+          errors: null,
+        });
+      })
+      .catch((error) => {
+        next(new ApiError(422, "Error logging in Organization.", error.toString()));
+      });
   });
 
 router.route("/:uid")
