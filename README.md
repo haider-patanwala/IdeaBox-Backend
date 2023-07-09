@@ -81,6 +81,8 @@ npm init @eslint/config
 npm i express-fileupload
 npm i express-validator
 npm i cloudinary
+npm i bcryptjs 
+npm i jsonwebtoken
 ```
 
 ---

@@ -2,10 +2,15 @@ const router = require("express").Router();
 const { promisify } = require("util");
 const cloudinary = require("cloudinary").v2;
 const { body, validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const Developer = require("../models/developer");
 const ApiError = require("../utils/ApiError");
 // const { deleteTmp } = require("../utils/deleteTmp");
 const controller = require("../controllers/developer");
+require('dotenv').config();
+
+const rounds = process.env.SALT_ROUNDS;
 
 router.route("/")
   .get((req, res, next) => {
@@ -22,7 +27,7 @@ router.route("/")
   });
 
 router.route("/auth/register")
-  .post(body("developer.password").isLength({ min: 8, max: 16 }), (req, res, next) => {
+  .post(body("password").isLength({ min: 8, max: 16 }), async (req, res, next) => {
     const developer = req.body;
     const file = req.files ? req.files.photo : null;
     const errors = validationResult(req);
@@ -32,13 +37,18 @@ router.route("/auth/register")
       return next(new ApiError(400, "Developer registeration failed. Provide password with min 8, max 16 characters. ", `${path} : ${msg}`));
     }
     try {
+      const salt = await bcrypt.genSalt(parseInt(rounds, 10));
+      securedPassword = await bcrypt.hash(req.body.password, salt);
+
+      const securedDeveloper = { ...developer, password: securedPassword };
+
       if (file) {
         const cloudinaryUpload = promisify(cloudinary.uploader.upload);
         return cloudinaryUpload(file.tempFilePath)
           .then((result) => {
-            developer.profile_pic = result.url;
+            securedDeveloper.profile_pic = result.url;
             // return Developer.create(developer);
-            controller.registerDeveloper(res, next, developer, file);
+            controller.registerDeveloper(res, next, securedDeveloper, file);
           })
           .catch((error) => {
             // console.log("Error --", error);
@@ -51,7 +61,7 @@ router.route("/auth/register")
             }
           });
       }
-      return controller.registerDeveloper(res, next, developer, file);
+      return controller.registerDeveloper(res, next, securedDeveloper, file);
     } catch (error) {
       return next(new ApiError(422, "Error creating developer..", error.toString()));
     }
