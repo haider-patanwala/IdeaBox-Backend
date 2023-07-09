@@ -78,7 +78,7 @@ router.route("/auth/login")
     Developer.findOne({ email: req.body.email })
       .then(async (document) => {
         if (!document) {
-          throw Error("Developer doesn't exist.");
+          throw Error("Developer not found.");
         }
         // this compare function returns a boolean value here.
         const passwordCompare = await bcrypt.compare(password, document.password);
@@ -87,7 +87,6 @@ router.route("/auth/login")
         }
 
         const token = jwt.sign({ email }, secret);
-        console.log("token - ", token);
         res.status(200).json({
           message: "Developer login successfull.",
           data: {
