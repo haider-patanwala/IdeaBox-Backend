@@ -6,7 +6,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Developer = require("../models/developer");
 const ApiError = require("../utils/ApiError");
-// const { deleteTmp } = require("../utils/deleteTmp");
 const controller = require("../controllers/developer");
 require('dotenv').config();
 
@@ -30,12 +29,17 @@ router.route("/")
 router.route("/auth/register")
   .post(body("password").isLength({ min: 8, max: 16 }), async (req, res, next) => {
     const developer = req.body;
+    const { password } = req.body;
     const file = req.files ? req.files.photo : null;
     const errors = validationResult(req);
 
+    if (!password) {
+      const { msg, path } = errors.array()[0];
+      return next(new ApiError(400, "Developer registration failed. Please provide a password.", `${path} : ${msg}`));
+    }
     if (!errors.isEmpty()) {
       const { msg, path } = errors.array()[0];
-      return next(new ApiError(400, "Developer registeration failed. Provide password with min 8, max 16 characters. ", `${path} : ${msg}`));
+      return next(new ApiError(400, "Developer registration failed. Provide password with min 8, max 16 characters. ", `${path} : ${msg}`));
     }
     try {
       const salt = await bcrypt.genSalt(parseInt(rounds, 10));
