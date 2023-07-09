@@ -2,10 +2,15 @@ const router = require("express").Router();
 const cloudinary = require("cloudinary").v2;
 const { promisify } = require("util");
 const { body, validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
+// const jwt = require("jsonwebtoken");
 const Organization = require("../models/organization");
 const ApiError = require("../utils/ApiError");
-const { deleteTmp } = require("../utils/deleteTmp");
 const controller = require("../controllers/organization");
+require("dotenv").config();
+
+const rounds = process.env.SALT_ROUNDS;
+// const secret = process.env.JWT_SECRET;
 
 router.route("/")
   .get((req, res, next) => {
@@ -20,7 +25,7 @@ router.route("/")
       .catch((error) => next(new ApiError(400, "Error fetching organizations.", error.toString())));
   })
 
-  .post(body("password").isLength({ min: 8, max: 16 }), (req, res, next) => {
+  .post(body("password").isLength({ min: 8, max: 16 }), async (req, res, next) => {
     const organization = req.body;
     const { password } = req.body;
     const file = req.files ? req.files.photo : null;
@@ -28,20 +33,24 @@ router.route("/")
 
     if (!password) {
       const { msg, path } = errors.array()[0];
-      return next(new ApiError(400, "Organization registeration failed. Please provide a password.", `${path} : ${msg}`));
+      return next(new ApiError(400, "Organization registration failed. Please provide a password.", `${path} : ${msg}`));
     }
     if (!errors.isEmpty()) {
       const { msg, path } = errors.array()[0];
-      return next(new ApiError(400, "Organization registeration failed. Provide password with min 8, max 16 characters. ", `${path} : ${msg}`));
+      return next(new ApiError(400, "Organization registration failed. Provide password with min 8, max 16 characters. ", `${path} : ${msg}`));
     }
     try {
+      const salt = await bcrypt.genSalt(parseInt(rounds, 10));
+      const securedPassword = await bcrypt.hash(password, salt);
+
+      const securedOrganization = { ...organization, password: securedPassword };
       if (file) {
         const cloudinaryUpload = promisify(cloudinary.uploader.upload);
         return cloudinaryUpload(file.tempFilePath)
           .then((result) => {
-            organization.banner_img = result.url;
+            securedOrganization.banner_img = result.url;
             // return Organization.create(organization);
-            controller.postOrganization(res, next, organization, file);
+            controller.postOrganization(res, next, securedOrganization, file);
           })
           .catch((error) => {
           // console.log("Error --", error);
@@ -54,7 +63,7 @@ router.route("/")
             }
           });
       }
-      return controller.postOrganization(res, next, organization, file);
+      return controller.postOrganization(res, next, securedOrganization, file);
     } catch (error) {
       return next(new ApiError(422, "Error creating organization..", error.toString()));
     }

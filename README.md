@@ -38,6 +38,7 @@ npm init @eslint/config
 
 
 - [x] Register new Developer - POST `/developers/auth/register`
+- [x] Login Developer - POST `/developers/auth/login`
 - [x] Retrieve all Developers - GET `/developers`
 - [x] Retrieve specific Developer - GET `/developers/:id`
 - [x] Update specific Developer - PATCH `/developers/:id`
@@ -46,6 +47,7 @@ npm init @eslint/config
 ### Organization
 
 - [x] Register new Organization - POST `/organizations/auth/register`
+- [x] Login Organization - POST `/organizations/auth/login`
 - [x] Retrive all Organization - GET `/organizations`
 - [x] Retrive specific Organization - GET `/organizations/:id`
 - [x] Update specific Organization - PATCH `/organizations/:id`
