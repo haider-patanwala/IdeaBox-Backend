@@ -48,6 +48,9 @@ const projectSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "organizations",
     },
+    thumbnail: {
+      type: "String",
+    },
   },
   {
     timestamps: true, // to create created_at & updated_at fields

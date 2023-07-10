@@ -1,6 +1,9 @@
 const router = require("express").Router();
+const { promisify } = require("util");
+const cloudinary = require("cloudinary").v2;
 const Project = require("../models/project");
 const ApiError = require("../utils/ApiError");
+const { deleteTmp } = require("../utils/deleteTmp");
 
 router.route("/")
   .get((req, res, next) => {
@@ -17,16 +20,33 @@ router.route("/")
 
   .post((req, res, next) => {
     const project = req.body;
+    const file = req.files.photo;
 
-    return Project.create(project)
-      .then((document) => {
-        res.status(201).json({
-          message: "Created a project successfully.",
-          data: document,
-          errors: null,
+    try {
+      const cloudinaryUpload = promisify(cloudinary.uploader.upload);
+      return cloudinaryUpload(file.tempFilePath)
+        .then((result) => {
+          project.thumbnail = result.url;
+          return Project.create(project);
+        })
+        .then((document) => {
+          res.status(201).json({
+            message: "Created a project successfully.",
+            data: document,
+            errors: null,
+          });
+          deleteTmp(file);
+        })
+        .catch((error) => {
+          if (error.http_code) {
+            next(new ApiError(422, "Error creating project!", JSON.stringify(error)));
+          } else {
+            next(new ApiError(422, "Error creating project", error.toString()));
+          }
         });
-      })
-      .catch((error) => next(new ApiError(422, "Error creating project.", error.toString())));
+    } catch (error) {
+      next(new ApiError(422, "Error creating project..", error.toString()));
+    }
   });
 
 router.route("/:uid")

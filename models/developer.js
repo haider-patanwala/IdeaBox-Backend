@@ -26,6 +26,10 @@ const developerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
     phone: {
       type: Number,
       required: true,
@@ -57,6 +61,9 @@ const developerSchema = new mongoose.Schema(
       ref: "projects",
     },
     ],
+    profile_pic: {
+      type: String,
+    },
   },
   {
     timestamps: true,
