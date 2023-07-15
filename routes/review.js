@@ -5,8 +5,22 @@ const ApiError = require("../utils/ApiError");
 
 router.route("/")
   .get((req, res, next) => {
+    // this queryObject is beneficial when some wrong query which is not intended is used in the URL
+    const queryObject = {};
+
+    // destructuring query key from URL.
+    const { sort } = req.query;
+
     // populating specific collections with only selected properties. - means to neglect that field i.e. _id
-    Review.find().populate({ path: "developer", select: "fname lname email uid -_id" }).populate({ path: "organization", select: "name website uid -_id" }).populate({ path: "project", select: "title uid -_id" })
+    let fetchedData = Review.find(queryObject).populate({ path: "developer", select: "fname lname email uid -_id" }).populate({ path: "organization", select: "name website uid -_id" }).populate({ path: "project", select: "title uid -_id" });
+
+    // if user has written `?sort=fname,city` with multiple sort conditions in URL :
+    if (sort) {
+      const sortFixed = sort.replace(",", " ");
+      fetchedData = fetchedData.sort(sortFixed);
+    }
+
+    fetchedData
       .then((documents) => {
         res.status(200).json({
           message: "Fetched reviews succesfully.",
