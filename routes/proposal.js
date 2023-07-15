@@ -4,6 +4,7 @@ const Proposal = require("../models/proposal");
 const ApiError = require("../utils/ApiError");
 
 router.route("/")
+  // roleBasedAuthentication is middlware powered by other 2 middlwares to conditionally verfy the authToken.
   .get(roleBasedAuthentication, (req, res, next) => {
     Proposal.find().populate("developer").populate("project")
       .then((documents) => {
@@ -19,7 +20,7 @@ router.route("/")
     const proposal = req.body;
     Proposal.create(proposal)
       .then((document) => {
-        res.status(200).json({
+        res.status(201).json({
           message: "Posted reviews successfully",
           data: document,
           errors: null,

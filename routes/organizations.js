@@ -84,11 +84,11 @@ router.route("/auth/register")
           .then((result) => {
             securedOrganization.banner_img = result.url;
             // return Organization.create(organization);
+            // shifting the common logic code to controller.
             controller.postOrganization(res, next, securedOrganization, file);
           })
           .catch((error) => {
-          // console.log("Error --", error);
-          // this if condition is for cloudinaryUpload(file.tempFilePath) promise as it returns error in object form with key `http_code` over here so handling it accordingly for that specific argument of tempFilePath
+          // *** this if condition is for cloudinaryUpload(file.tempFilePath) promise as it returns error in object form with key `http_code` over here so handling it accordingly for that specific argument of tempFilePath
           // a typo in `tempFilePath` spelling will trigger satisfy this `if` block.
             if (error.http_code) {
               next(new ApiError(422, "Error creating organization!", JSON.stringify(error)));

@@ -8,8 +8,10 @@ const { isOrganizationAuthenticated } = require("../middleware/isAuthenticated")
 
 router.route("/")
   .get((req, res, next) => {
+    // this queryObject is beneficial when some wrong query which is not intended is used in the URL
     const queryObject = {};
 
+    // destructuring query keys from URL.
     const {
       title, techStack, board, featured, sort,
     } = req.query;
