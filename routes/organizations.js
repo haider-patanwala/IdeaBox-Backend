@@ -132,7 +132,7 @@ router.route("/auth/login")
   });
 
 router.route("/:uid")
-  .get(isOrganizationAuthenticated, (req, res, next) => {
+  .get((req, res, next) => {
     Organization.findOne({ uid: req.params.uid }).populate("org_projects")
       .then((document) => {
         if (!document) {

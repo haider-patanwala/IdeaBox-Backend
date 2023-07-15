@@ -78,7 +78,7 @@ npm init @eslint/config
   >    - Or something more complex like `?domain=it&name=raw`
 - [x] Register new Organization - <span style="color:springgreen">POST</span> `/organizations/auth/register` - *generates authToken too.*
 - [x] Login Organization - <span style="color:springgreen">POST</span> `/organizations/auth/login` - *generates authToken too.*
-- [x] Retrive specific Organization - *Protected* <span style="color:deepskyblue">GET</span> `/organizations/:id`
+- [x] Retrive specific Organization - <span style="color:deepskyblue">GET</span> `/organizations/:id`
 - [x] Update specific Organization - *Protected* <span style="color:yellow">PATCH</span> `/organizations/:id`
 - [x] Delete specific Organization - *Protected* <span style="color:red">DELETE</span> `/organizations/:id`
 
