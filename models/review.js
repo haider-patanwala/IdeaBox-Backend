@@ -17,17 +17,17 @@ const reviewSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    dev_uid: {
-      // saving String uid as we dont need ObjectId type to be stored.
-      type: mongoose.Schema.Types.String,
+    developer: {
+      // would need to send "_id" value for this field as populate query in the routes function based on objectId
+      type: mongoose.Schema.Types.ObjectId,
       ref: "developers",
     },
-    org_uid: {
-      type: mongoose.Schema.Types.String,
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
       ref: "organizations",
     },
-    proj_uid: {
-      type: mongoose.Schema.Types.String,
+    project: {
+      type: mongoose.Schema.Types.ObjectId,
       ref: "projects",
     },
   },

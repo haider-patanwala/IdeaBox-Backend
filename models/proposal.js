@@ -10,12 +10,13 @@ const proposalSchema = new mongoose.Schema(
       default: () => proposalUID(),
     },
     project: {
-      type: mongoose.Schema.Types.String,
+      // would need to send "_id" value for this field as populate query in the routes function based on objectId
+      type: mongoose.Schema.Types.ObjectId,
       ref: "projects",
       required: true,
     },
     developer: {
-      type: mongoose.Schema.Types.String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "developers",
       required: true,
     },
