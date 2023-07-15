@@ -64,6 +64,9 @@ const developerSchema = new mongoose.Schema(
     profile_pic: {
       type: String,
     },
+    technical_role: {
+      type: String,
+    },
   },
   {
     timestamps: true,

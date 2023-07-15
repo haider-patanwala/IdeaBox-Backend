@@ -49,7 +49,31 @@ const projectSchema = new mongoose.Schema(
       ref: "organizations",
     },
     thumbnail: {
-      type: "String",
+      type: String,
+    },
+    hourly_rate: {
+      type: Number,
+    },
+    fixed_price: {
+      type: Number,
+    },
+    reviews: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "reviews",
+    },
+    ],
+    proposals: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "proposals",
+    }],
+    project_type: { // one-time/monthly/yearly
+      type: String,
+    },
+    required_personnel: { // like entry-level/exprerienced
+      type: String,
+    },
+    bookmark: { // to save a project
+      type: Boolean,
     },
   },
   {
