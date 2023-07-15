@@ -78,7 +78,7 @@ router.route("/")
           });
         }
       })
-      .catch((error) => next(new ApiError(400, "Error fetching developers.", error.toString())));
+      .catch((error) => next(new ApiError(422, "Error fetching developers.", error.toString())));
   });
 
 router.route("/auth/register")
@@ -90,6 +90,7 @@ router.route("/auth/register")
 
     if (!password) {
       const { msg, path } = errors.array()[0];
+      // 400 HTTP status code because the error would be related to invalid request payload.
       return next(new ApiError(400, "Developer registration failed. Please provide a password.", `${path} : ${msg}`));
     }
     if (!errors.isEmpty()) {
@@ -108,10 +109,10 @@ router.route("/auth/register")
           .then((result) => {
             securedDeveloper.profile_pic = result.url;
             // return Developer.create(developer);
+            // shifting the common logic code to controller.
             controller.registerDeveloper(res, next, securedDeveloper, file);
           })
           .catch((error) => {
-            // console.log("Error --", error);
             // *** this if condition is for cloudinaryUpload(file.tempFilePath) promise as it returns error in object form with key `http_code` over here so handling it accordingly for that specific argument of tempFilePath
             // a typo in `tempFilePath` spelling will trigger satisfy this `if` block.
             if (error.http_code) {
@@ -144,7 +145,7 @@ router.route("/auth/login")
         const token = jwt.sign({ email }, secret);
 
         res.status(200).json({
-          message: "Developer login successfull.",
+          message: "Developer login successful.",
           data: {
             access_token: token,
             developer: document,
@@ -168,7 +169,7 @@ router.route("/:uid")
           errors: null,
         });
       })
-      .catch((error) => next(new ApiError(400, "Error fetching developer.", error.toString())));
+      .catch((error) => next(new ApiError(422, "Error fetching developer.", error.toString())));
   })
 
   .patch(isDeveloperAuthenticated, (req, res, next) => {
