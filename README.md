@@ -52,6 +52,8 @@ npm init @eslint/config
    - A developer should be able to create, delete review on the organization they've worked with.
    - A organization should be able to create, delete review for the developer they've worked with.
 
+![Schema diagram](<public/Projekto scheme .png>)
+
 ---
 
 ## API Index 
@@ -104,6 +106,7 @@ npm init @eslint/config
 ### Review
 
 - [x] Retrieve all reviews - <span style="color:deepskyblue">GET</span> `/reviews`
+  >  - [x] SORT asc/desc based on '*any*' parameter  - <span style="color:deepskyblue">GET</span> `/reviews?sort=rating` or `=-rating` for descending.
 - [x] Create new review - *Dev+Org Protected* <span style="color:springgreen">POST</span> `/reviews`
 - [x] Update specific review - *Protected* <span style="color:yellow">PATCH</span> `/reviews/:id`
 - [x] Delete specific review - *Protected* <span style="color:red">DELETE</span> `/reviews/:id`
@@ -133,6 +136,17 @@ npm i cloudinary
 npm i bcryptjs 
 npm i jsonwebtoken
 ```
+
+---
+
+### Some Standard HTTP codes used throughout the project : 
+
+- `201` - Create/Register Resource.
+- `200` - OK for Updating/Deleting Resource.
+- `400` - Bad Request due to possible syntax errors/invalid request payload, etc
+- `422` - Unprocessible due to business-logic/input validations related issues.
+- `401` - Unauthorized access to Resource used in access_token verification
+- `404` - Resource not found.
 
 ---
 
@@ -177,4 +191,5 @@ developer schema :
 1. relation "organization" (new/option)...
 2. add "projects" - role.(figure out this)
 
-
+- Input body Validation
+- Ask sir about HTP status code consistency.
