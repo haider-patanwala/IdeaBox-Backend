@@ -31,11 +31,12 @@ const updateDeveloper = (req, res, next, developer, file) => {
   // respone bydefault comes an old document so giving new:true option to get a fresh updated document.
   Developer.findOneAndUpdate({ uid: req.params.uid }, { ...developer }, { new: true })
     .then((document) => {
+      // findOneAndUpdate returns null if document is not found so using it to throw error.
       if (!document) {
         throw Error("Developer not found.");
       }
       res.status(200).json({
-        message: "Developer Updated",
+        message: "Developer updated successfully.",
         data: document,
         errors: null,
       });

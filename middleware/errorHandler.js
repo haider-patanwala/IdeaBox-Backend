@@ -7,17 +7,20 @@ module.exports = (err, req, res, next) => {
 
   let HTTPStatusCode = 400;
 
+  // creating a default json object to send as response.
   const responseObject = {
     message: "Internal Server Error.",
     error: err.message ? err.message : err.toString(),
   };
 
+  // if the error occured by calling the class ApiError then update the existing parameters which we set above.
   if (err instanceof ApiError) {
     HTTPStatusCode = err.statusCode;
-    responseObject.error = err.err;
     responseObject.message = err.message;
+    responseObject.error = err.err;
   }
 
+  // sending the error response back to client
   return res.status(HTTPStatusCode).json({
     ...responseObject,
   });

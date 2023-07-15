@@ -27,11 +27,12 @@ const organizationSchema = new mongoose.Schema(
     domain: {
       type: String,
     },
+    // sending multiple references in an array for onne to many relation kinda thing.
     org_projects: [{
+      // would need to send "_id" value for this field as populate query in the routes function based on objectId
       type: mongoose.Schema.Types.ObjectId,
       ref: "projects",
-    },
-    ],
+    }],
     banner_img: {
       type: "String",
     },
@@ -45,6 +46,9 @@ const organizationSchema = new mongoose.Schema(
   },
 );
 
+// mongoose.model takes 2 arguments
+// 1st - Name of the collection
+// 2nd - Name of the schema
 const organizationModel = mongoose.model("organizations", organizationSchema);
 
 module.exports = organizationModel;

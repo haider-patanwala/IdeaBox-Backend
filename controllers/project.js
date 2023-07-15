@@ -23,6 +23,7 @@ const updateProject = (req, res, next, project, file) => {
   // respone bydefault comes an old document so giving new:true option to get a fresh updated document.
   Project.findOneAndUpdate({ uid: req.params.uid }, { ...project }, { new: true })
     .then((document) => {
+      // findOneAndUpdate returns null if document is not found so using it to throw error.
       if (!document) {
         throw Error("Project not found.");
       }
