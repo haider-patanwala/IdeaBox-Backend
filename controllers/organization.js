@@ -21,6 +21,25 @@ const postOrganization = (res, next, organization, file) => {
     });
 };
 
+const updateOrganiztion = (req, res, next, organization, file) => {
+  // respone bydefault comes an old document so giving new:true option to get a fresh updated document.
+  Organization.findOneAndUpdate({ uid: req.params.uid }, { ...organization }, { new: true })
+    .then((document) => {
+      if (!document) {
+        throw Error("Organization not found.");
+      }
+      res.status(200).json({
+        message: "Updated organization successfully.",
+        data: document,
+        errors: null,
+      });
+      if (file) {
+        deleteTmp(file);
+      }
+    })
+    .catch((error) => next(new ApiError(422, "Error updating organization.", error.toString())));
+};
 module.exports = {
   postOrganization,
+  updateOrganiztion,
 };
