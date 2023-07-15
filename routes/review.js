@@ -5,7 +5,8 @@ const ApiError = require("../utils/ApiError");
 
 router.route("/")
   .get((req, res, next) => {
-    Review.find()
+    // populating specific collections with only selected properties. - means to neglect that field i.e. _id
+    Review.find().populate({ path: "developer", select: "fname lname email uid -_id" }).populate({ path: "organization", select: "name website uid -_id" }).populate({ path: "project", select: "title uid -_id" })
       .then((documents) => {
         res.status(200).json({
           message: "Fetched reviews succesfully.",
