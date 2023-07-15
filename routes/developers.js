@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const Developer = require("../models/developer");
 const ApiError = require("../utils/ApiError");
 const controller = require("../controllers/developer");
+const { isDeveloperAuthenticated } = require("../middleware/isAuthenticated");
 require('dotenv').config();
 
 const rounds = process.env.SALT_ROUNDS;
@@ -14,14 +15,68 @@ const secret = process.env.JWT_SECRET;
 
 router.route("/")
   .get((req, res, next) => {
+    // Developer.find()
+    // Developer.find({ fname: "Meet" })
+    // Developer.find(req.query)
+
+    // this queryObject is beneficial when some wrong query which is not intended is used in the URL
+    const queryObject = {};
+
+    // destructuring these queries from URL.
+    // they'll be passes like this --> `?city=mumbai` or `?openToWork=true` or `?sort=fname,city`
+    // so destructuring just the keys.
+    const {
+      openToWork, city, sort, fname, lname, qualification,
+    } = req.query;
+
+    // DEALING with case insensitive or not.
+    // regex enables searching for partial values too. Like if mum is typed then Mumbai results will still come.
+    if (city) { // FOR CASE-INSENSITIVE SEARCHING
+      // queryObject.city = city;
+      queryObject.city = { $regex: city, $options: "i" }; // i option means case insensitive.
+    }
+    if (fname) { // FOR CASE-INSENSITIVE SEARCHING
+      queryObject.fname = { $regex: `${fname}`, $options: "i" };
+    }
+    if (lname) { // FOR CASE-INSENSITIVE SEARCHING
+      queryObject.lname = { $regex: lname, $options: "i" };
+    }
+    if (qualification) { // FOR CASE-INSENSITIVE SEARCHING
+      queryObject.qualification = { $regex: qualification, $options: "i" };
+    }
+    if (openToWork) {
+      // this is a boolean field so no need to worry about making it case insensitive as boolean always should be case sensitive.
+      queryObject.openToWork = openToWork;
+    }
+
     // `populate` is used to fetch the foreign key referenced document in the find response based on the keys passed as an argument to the method.
-    Developer.find().populate("dev_organization").populate("dev_projects")
+    // req.query helps for finding only those specific documents which are queried from the URL like /developers?fname=Meet&fname=Tarun
+    // Sorting is achieved by sort("fname -city") function
+    // had to put the find method in a variable as we needed to put sort over it again.
+    let fetchedData = Developer.find(queryObject).populate("dev_organization").populate("dev_projects");
+
+    // if user has written `?sort=fname,city` with multiple sort conditions in URL :
+    if (sort) { // FOR SORTING BASE ON ANY KEY
+      const sortFixed = sort.replace(",", " ");
+      fetchedData = fetchedData.sort(sortFixed);
+    }
+
+    // if no sort then do the work as usual
+    fetchedData
       .then((documents) => {
-        res.status(200).json({
-          message: "Developers fetched successfully",
-          data: documents,
-          errors: null,
-        });
+        if (documents.length === 0) {
+          res.status(404).json({
+            message: "No developers data found. Insert some data please.",
+            data: documents,
+            errors: null,
+          });
+        } else {
+          res.status(200).json({
+            message: "Developers fetched successfully",
+            data: documents,
+            errors: null,
+          });
+        }
       })
       .catch((error) => next(new ApiError(400, "Error fetching developers.", error.toString())));
   });
@@ -87,6 +142,7 @@ router.route("/auth/login")
         }
 
         const token = jwt.sign({ email }, secret);
+
         res.status(200).json({
           message: "Developer login successfull.",
           data: {
@@ -98,8 +154,9 @@ router.route("/auth/login")
       })
       .catch((error) => next(new ApiError(422, "Error logging in Developer.", error.toString())));
   });
+
 router.route("/:uid")
-  .get((req, res, next) => {
+  .get(isDeveloperAuthenticated, (req, res, next) => {
     Developer.findOne({ uid: req.params.uid }).populate("dev_organization").populate("dev_projects")
       .then((document) => {
         if (!document) {
@@ -114,26 +171,38 @@ router.route("/:uid")
       .catch((error) => next(new ApiError(400, "Error fetching developer.", error.toString())));
   })
 
-  .patch((req, res, next) => {
+  .patch(isDeveloperAuthenticated, (req, res, next) => {
     const developer = req.body;
+    const file = req.files ? req.files.photo : null;
 
-    // respone bydefault comes an old document so giving new:true option to get a fresh updated document.
-    Developer.findOneAndUpdate({ uid: req.params.uid }, { ...developer }, { new: true })
-      .then((document) => {
-        if (!document) {
-          throw Error("Developer not found.");
-        }
+    try {
+      if (file) {
+        const cloudinaryUpload = promisify(cloudinary.uploader.upload);
+        cloudinaryUpload(file.tempFilePath)
+          .then((result) => {
+            developer.profile_pic = result.url;
 
-        return res.status(200).json({
-          message: "Developer Updated",
-          data: document,
-          errors: null,
-        });
-      })
-      .catch((error) => next(new ApiError(422, "Error updating developer.", error.toString())));
+            controller.updateDeveloper(req, res, next, developer, file);
+          })
+          .catch((error) => {
+            // console.log("Error --", error);
+          // this if condition is for cloudinaryUpload(file.tempFilePath) promise as it returns error in object form with key `http_code` over here so handling it accordingly for that specific argument of tempFilePath
+          // a typo in `tempFilePath` spelling will trigger satisfy this `if` block.
+            if (error.http_code) {
+              next(new ApiError(422, "Error updating developer!", JSON.stringify(error)));
+            } else {
+              next(new ApiError(422, "Error updating developer!!", error.toString()));
+            }
+          });
+      } else {
+        controller.updateDeveloper(req, res, next, developer, file);
+      }
+    } catch (error) {
+      next(new ApiError(422, "Error updating developer..", error.toString()));
+    }
   })
 
-  .delete((req, res, next) => {
+  .delete(isDeveloperAuthenticated, (req, res, next) => {
     Developer.deleteOne({ uid: req.params.uid })
       .then((document) => {
         // deleteOne method doesnt return the found/deleted document

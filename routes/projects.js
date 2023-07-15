@@ -3,47 +3,78 @@ const { promisify } = require("util");
 const cloudinary = require("cloudinary").v2;
 const Project = require("../models/project");
 const ApiError = require("../utils/ApiError");
-const { deleteTmp } = require("../utils/deleteTmp");
+const controller = require("../controllers/project");
+const { isOrganizationAuthenticated } = require("../middleware/isAuthenticated");
 
 router.route("/")
   .get((req, res, next) => {
-    Project.find().populate("lead").populate("proj_organization")
+    const queryObject = {};
+
+    const {
+      title, techStack, board, featured, sort,
+    } = req.query;
+
+    if (title) { // FOR CASE-INSENSITIVE SEARCHING
+      queryObject.title = { $regex: title, $options: "i" };
+    }
+    if (techStack) { // FOR CASE-INSENSITIVE SEARCHING
+      queryObject.techStack = { $regex: techStack, $options: "i" };
+    }
+    if (board) { // FOR CASE-INSENSITIVE SEARCHING
+      queryObject.board = { $regex: board, $options: "i" };
+    }
+    if (featured) { // FOR FILTERING
+      queryObject.featured = featured;
+    }
+    let fetchedData = Project.find(queryObject).populate("lead").populate("proj_organization");
+
+    if (sort) { // FOR SORTING BASE ON ANY KEY
+      const fixedSort = sort.replace(",", " ");
+      fetchedData = fetchedData.sort(fixedSort);
+    }
+    fetchedData
       .then((documents) => {
-        res.status(200).json({
-          message: "Projects fetched succcessfully",
-          data: documents,
-          errors: null,
-        });
+        if (documents.length === 0) {
+          res.status(404).json({
+            message: "No projects data found. Insert some data please.",
+            data: documents,
+            errors: null,
+          });
+        } else {
+          res.status(200).json({
+            message: "Projects fetched succcessfully",
+            data: documents,
+            errors: null,
+          });
+        }
       })
       .catch((error) => next(new ApiError(400, "Error fetching projects.", error.toString())));
   })
 
-  .post((req, res, next) => {
+  .post(isOrganizationAuthenticated, (req, res, next) => {
     const project = req.body;
-    const file = req.files.photo;
+    const file = req.files ? req.files.photo : null;
 
     try {
-      const cloudinaryUpload = promisify(cloudinary.uploader.upload);
-      return cloudinaryUpload(file.tempFilePath)
-        .then((result) => {
-          project.thumbnail = result.url;
-          return Project.create(project);
-        })
-        .then((document) => {
-          res.status(201).json({
-            message: "Created a project successfully.",
-            data: document,
-            errors: null,
+      if (file) {
+        const cloudinaryUpload = promisify(cloudinary.uploader.upload);
+        cloudinaryUpload(file.tempFilePath)
+          .then((result) => {
+            project.thumbnail = result.url;
+            // return Project.create(project);
+
+            controller.postProject(res, next, project, file);
+          })
+          .catch((error) => {
+            if (error.http_code) {
+              next(new ApiError(422, "Error creating project!", JSON.stringify(error)));
+            } else {
+              next(new ApiError(422, "Error creating project", error.toString()));
+            }
           });
-          deleteTmp(file);
-        })
-        .catch((error) => {
-          if (error.http_code) {
-            next(new ApiError(422, "Error creating project!", JSON.stringify(error)));
-          } else {
-            next(new ApiError(422, "Error creating project", error.toString()));
-          }
-        });
+      } else {
+        controller.postProject(res, next, project, file);
+      }
     } catch (error) {
       next(new ApiError(422, "Error creating project..", error.toString()));
     }
@@ -65,25 +96,35 @@ router.route("/:uid")
       .catch((error) => next(new ApiError(400, "Error fetching project.", error.toString())));
   })
 
-  .patch((req, res, next) => {
+  .patch(isOrganizationAuthenticated, (req, res, next) => {
     const project = req.body;
+    const file = req.files ? req.files.photo : null;
 
-    // respone bydefault comes an old document so giving new:true option to get a fresh updated document.
-    Project.findOneAndUpdate({ uid: req.params.uid }, { ...project }, { new: true })
-      .then((document) => {
-        if (!document) {
-          throw Error("Project not found.");
-        }
-        res.status(200).json({
-          message: "Project updated succcessfully.",
-          data: document,
-          errors: null,
-        });
-      })
-      .catch((error) => next(new ApiError(422, "Error updating project.", error.toString())));
+    try {
+      if (file) {
+        const cloudinaryUpload = promisify(cloudinary.uploader.upload);
+        cloudinaryUpload(file.tempFilePath)
+          .then((result) => {
+            project.thumbnail = result.url;
+
+            controller.updateProject(req, res, next, project, file);
+          })
+          .catch((error) => {
+            if (error.http_code) {
+              next(new ApiError(422, "Error updating project!", JSON.stringify(error)));
+            } else {
+              next(new ApiError(422, "Error updating project!!", error.toString()));
+            }
+          });
+      } else {
+        controller.updateProject(req, res, next, project, file);
+      }
+    } catch (error) {
+      next(new ApiError(422, "Error updating project..", error.toString()));
+    }
   })
 
-  .delete((req, res, next) => {
+  .delete(isOrganizationAuthenticated, (req, res, next) => {
     Project.deleteOne({ uid: req.params.uid })
       .then((document) => {
         // deleteOne method doesnt return the found/deleted document

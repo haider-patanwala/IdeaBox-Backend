@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const Organization = require("../models/organization");
 const ApiError = require("../utils/ApiError");
 const controller = require("../controllers/organization");
+const { isOrganizationAuthenticated } = require("../middleware/isAuthenticated");
 require("dotenv").config();
 
 const rounds = process.env.SALT_ROUNDS;
@@ -14,13 +15,45 @@ const secret = process.env.JWT_SECRET;
 
 router.route("/")
   .get((req, res, next) => {
-    Organization.find().populate("org_projects")
+    // Organization.find()
+    // Organization.find({ name: "Raw Enginnering India Pvt Ltd"})
+    // Organization.find(req.query)
+
+    // this queryObject is beneficial when some wrong query which is not intended is used in the URL
+    const queryObject = {};
+
+    // destructuring query keys from URL.
+    const { name, domain, sort } = req.query;
+
+    if (name) { // FOR CASE-INSENSITIVE SEARCHING
+      queryObject.name = { $regex: name, $options: "i" };
+    }
+    if (domain) { // FOR CASE-INSENSITIVE SEARCHING
+      queryObject.domain = { $regex: domain, $options: "i" };
+    }
+
+    let fetchedData = Organization.find(queryObject).populate("org_projects");
+
+    if (sort) { // FOR SORTING BASED ON ANY KEY
+      const fixedSort = sort.replace(",", " ");
+      fetchedData = fetchedData.sort(fixedSort);
+    }
+
+    fetchedData
       .then((documents) => {
-        res.status(200).json({
-          message: "Fetched organization successfully.",
-          data: documents,
-          errors: null,
-        });
+        if (documents.length === 0) {
+          res.status(404).json({
+            message: "No organizations data found. Insert some data please.",
+            data: documents,
+            errors: null,
+          });
+        } else {
+          res.status(200).json({
+            message: "Fetched organization successfully.",
+            data: documents,
+            errors: null,
+          });
+        }
       })
       .catch((error) => next(new ApiError(400, "Error fetching organizations.", error.toString())));
   });
@@ -99,7 +132,7 @@ router.route("/auth/login")
   });
 
 router.route("/:uid")
-  .get((req, res, next) => {
+  .get(isOrganizationAuthenticated, (req, res, next) => {
     Organization.findOne({ uid: req.params.uid }).populate("org_projects")
       .then((document) => {
         if (!document) {
@@ -114,30 +147,43 @@ router.route("/:uid")
       .catch((error) => next(new ApiError(400, "Error fetching organization.", error.toString())));
   })
 
-  .patch((req, res, next) => {
+  .patch(isOrganizationAuthenticated, (req, res, next) => {
     const organization = req.body;
+    const file = req.files ? req.files.photo : null;
 
-    // respone bydefault comes an old document so giving new:true option to get a fresh updated document.
-    Organization.findOneAndUpdate({ uid: req.params.uid }, { ...organization }, { new: true })
-      .then((document) => {
-        if (!document) {
-          throw Error("Organization not found.");
-        }
-        return res.status(200).json({
-          message: "Updated organization successfully.",
-          data: document,
-          errors: null,
-        });
-      })
-      .catch((error) => next(new ApiError(422, "Error updating organization.", error.toString())));
+    try {
+      if (file) {
+        const cloudinaryUpload = promisify(cloudinary.uploader.upload);
+        cloudinaryUpload(file.tempFilePath)
+          .then((result) => {
+            organization.banner_img = result.url;
+
+            controller.updateOrganiztion(req, res, next, organization, file);
+          })
+          .catch((error) => {
+            // console.log("Error --", error);
+          // this if condition is for cloudinaryUpload(file.tempFilePath) promise as it returns error in object form with key `http_code` over here so handling it accordingly for that specific argument of tempFilePath
+          // a typo in `tempFilePath` spelling will trigger satisfy this `if` block.
+            if (error.http_code) {
+              next(new ApiError(422, "Error updating organization!", JSON.stringify(error)));
+            } else {
+              next(new ApiError(422, "Error updating organization!!", error.toString()));
+            }
+          });
+      } else {
+        controller.updateOrganiztion(req, res, next, organization, file);
+      }
+    } catch (error) {
+      next(new ApiError(422, "Error updating organization..", error.toString()));
+    }
   })
-  .delete((req, res, next) => {
-    Organization.findOneAndDelete({ uid: req.params.uid })
+  .delete(isOrganizationAuthenticated, (req, res, next) => {
+    Organization.deleteOne({ uid: req.params.uid })
       .then((document) => {
         // deleteOne method doesnt return the found/deleted document
         // but it returns a key `deletedCount` with value 0 or 1
         // so if it is 0 means nothing was deleted means the documen was not found to delete.
-        if (!document.deletedCount) {
+        if (document.deletedCount === 0) {
           throw Error("Organization not found");
         }
         return res.status(200).json({
