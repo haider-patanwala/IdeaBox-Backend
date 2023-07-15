@@ -31,35 +31,82 @@ npm init @eslint/config
 ```
 
 ---
+## What is Project Listing App ?
+
+> An all-in-one project listing app with a powerful backend, enabling seamless browsing of projects, businesses, and developers while offering extensive project details and developer profiles.
+---
+
+## What are the basic functional requirements of the app ? 
+
+*A functional requirement (FR) defines the specific services and behaviors that the software system or its components must provide, encompassing inputs, system behavior, and corresponding outputs.*
+
+1. **Developer** - 
+   - Developer should be able to do CRUD operation on their profile
+2. **Organization** -
+   - Organization should be able to do CRUD operation on their profile
+3. **Project** - 
+   - Organization should be able to do CRUD operation on their listed projects
+4. **Proposal** - 
+   - A developer should be able to do CRUD operation on their proposals made to organization's project.
+5. **Review**
+   - A developer should be able to create, delete review on the organization they've worked with.
+   - A organization should be able to create, delete review for the developer they've worked with.
+
+---
 
 ## API Index 
 
 ### Developer
 
-
-- [x] Register new Developer - POST `/developers/auth/register`
-- [x] Login Developer - POST `/developers/auth/login`
-- [x] Retrieve all Developers - GET `/developers`
-- [x] Retrieve specific Developer - GET `/developers/:id`
-- [x] Update specific Developer - PATCH `/developers/:id`
-- [x] Delete specific Developer - DELETE `/developers/:id`
+- [x] Retrieve all Developers - <span style="color:deepskyblue">GET</span> `/developers`
+  >  - [x] SORT asc/desc based on '*any*' parameter  - <span style="color:deepskyblue">GET</span> `/developers?sort=city` or `=-city` for descending.
+  >  - [x] SEARCH based on '*fname, lname, city, qualification*' parameter of schema - <span style="color:deepskyblue">GET</span> `/developers?city=mum` 
+  >    - Or something more complex like `?fname=me&city=che`
+  >    - Or `?qualification=BE+in+Comp&sort=fname`
+  >  - [x] FILTER based on '*openToWork*' - <span style="color:deepskyblue">GET</span> `/developers?openToWork=true`
+- [x] Register new Developer - <span style="color:springgreen">POST</span> `/developers/auth/register` - *generates authToken too.*
+- [x] Login Developer - <span style="color:springgreen">POST</span> `/developers/auth/login` - *generates authToken too.*
+- [x] Retrieve specific Developer - *Protected* <span style="color:deepskyblue">GET</span> `/developers/:id`
+- [x] Update specific Developer - *Protected* <span style="color:yellow">PATCH</span> `/developers/:id`
+- [x] Delete specific Developer - *Protected* <span style="color:red">DELETE</span> `/developers/:id`
 
 ### Organization
 
-- [x] Register new Organization - POST `/organizations/auth/register`
-- [x] Login Organization - POST `/organizations/auth/login`
-- [x] Retrive all Organization - GET `/organizations`
-- [x] Retrive specific Organization - GET `/organizations/:id`
-- [x] Update specific Organization - PATCH `/organizations/:id`
-- [x] Delete specific Organization - DELETE `/organizations/:id`
+- [x] Retrive all Organization - <span style="color:deepskyblue">GET</span> `/organizations`
+  >  - [x] SORT/FILTER asc/desc based on '*any*' parameter  - <span style="color:deepskyblue">GET</span> `/organizations?sort=name` or `=-name` for descending.
+  >  - [x] SEARCH based on '*name, domain*' parameter of schema - <span style="color:deepskyblue">GET</span> `/organizations?domain=it` 
+  >    - Or something more complex like `?domain=it&name=raw`
+- [x] Register new Organization - <span style="color:springgreen">POST</span> `/organizations/auth/register` - *generates authToken too.*
+- [x] Login Organization - <span style="color:springgreen">POST</span> `/organizations/auth/login` - *generates authToken too.*
+- [x] Retrive specific Organization - *Protected* <span style="color:deepskyblue">GET</span> `/organizations/:id`
+- [x] Update specific Organization - *Protected* <span style="color:yellow">PATCH</span> `/organizations/:id`
+- [x] Delete specific Organization - *Protected* <span style="color:red">DELETE</span> `/organizations/:id`
 
 ### Project
 
-- [x] Create new Project - POST `/projects`
-- [x] Retrive all Projects - GET `/projects`
-- [x] Retrive specific Project - GET `/projects/:id`
-- [x] Update specific Project - PATCH `/projects/:id`
-- [x] Delete specific Project - DELETE `/projects/:id`
+- [x] Retrive all Projects - <span style="color:deepskyblue">GET</span> `/projects`
+  >  - [x] SORT asc/desc based on '*any*' parameter  - <span style="color:deepskyblue">GET</span> `/projects?sort=createdAt` or `=-createdAt` for descending.
+  >  - [x] SEARCH/FILTER based on '*title, techStack*' parameter of schema - <span style="color:deepskyblue">GET</span> `/projects?title=edu` 
+  >  - [x] FILTER based on '*featured*' - <span style="color:deepskyblue">GET</span> `/developers?featured=true`
+  >    - Or something more complex like `?projects?projects?board=kan&featured=false`
+- [x] Create new Project - *Organization Protected* <span style="color:springgreen">POST</span> `/projects`
+- [x] Retrive specific Project - <span style="color:deepskyblue">GET</span> `/projects/:id`
+- [x] Update specific Project - *Organization Protected* <span style="color:yellow">PATCH</span> `/projects/:id`
+- [x] Delete specific Project - *Organization Protected* <span style="color:red">DELETE</span> `/projects/:id`
+
+### Proposals
+
+- [x] Retrieve all proposals - *Dev+Org Protected* <span style="color:deepskyblue">GET</span> `/proposals`
+- [x] Create new proposal - *Dev Protected* <span style="color:springgreen">POST</span> `/proposals`
+- [x] Update specific proposal - *Dev Protected* <span style="color:yellow">PATCH</span> `/proposals/:id`
+- [x] Delete specific proposal - *Dev Protected* <span style="color:red">DELETE</span> `/proposals/:id`
+
+### Review
+
+- [x] Retrieve all reviews - <span style="color:deepskyblue">GET</span> `/reviews`
+- [x] Create new review - *Dev+Org Protected* <span style="color:springgreen">POST</span> `/reviews`
+- [x] Update specific review - *Protected* <span style="color:yellow">PATCH</span> `/reviews/:id`
+- [x] Delete specific review - *Protected* <span style="color:red">DELETE</span> `/reviews/:id`
 
 
 ---
@@ -89,8 +136,45 @@ npm i jsonwebtoken
 
 ---
 
+#### Learnings :
+
+1. Might get the following errors in console : 
+```bash
+Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+```
+To resolve it, look for multiple `res.status()` being sent from one request. Look for `return` statements carefully too and handle it appropriately. Or look for conditional logic like `if..else` blocks.
+
+You can send a response to the client only once when you send more than one time that will generate the error
+2. About ExpressJS' `request` object parts : 
+   1. `req.body` - Generally used in POST/PUT requests when we need to send data to the server. Remember to use `express.json()` middleware to parse request body else you'll get an error
+   2. `req.params` - These are properties attached to the url i.e named route parameters. You prefix the parameter name with a colon ( `:` ) when writing your routes.
+   ```javascript
+    app.get('/giraffe/:number', (req, res) => {
+        console.log(req.params.number)
+    })
+
+   ```
+   ```bash
+    GET  http://localhost:3000/giraffe/1
+   ```
+   3. `req.query` - Mostly used for searching,sorting, filtering, pagination, e.t.c. It written as key=value preceeded by `?`. We can add multiple queries using `&` operator in the URL.
+   ```bash
+    GET  http://localhost:3000/animals?page=10
+    GET  http://localhost:3000/animals?page=10&section=2
+   ```
+   ```javascript
+    app.get('/animals', ()=>{
+        Animals.find(req.query)
+        console.log(req.query.page) // 10
+    })
+   ```
+3. For data hosted on MongoDB Atlas, MongoDB offers an improved full-text search solution,  **Atlas Search**, which has its own `$regex` operator.
+4. FOr sorting, using mongoose `sort()` [ref here](https://mongoosejs.com/docs/api/query.html#Query.prototype.sort()). 
+
 #### Todo :
 
 developer schema :
 1. relation "organization" (new/option)...
 2. add "projects" - role.(figure out this)
+
+
