@@ -37,9 +37,9 @@ const developerSchema = new mongoose.Schema(
     qualification: {
       type: String,
     },
-    skills: {
+    skills: [{
       type: String,
-    },
+    }],
     city: {
       type: String,
     },
@@ -53,9 +53,11 @@ const developerSchema = new mongoose.Schema(
       type: String,
     },
     dev_organization: {
+      // would need to send "_id" value for this field as populate query in the routes function based on objectId
       type: mongoose.Schema.Types.ObjectId,
       ref: "organizations", // using ref key to establish a foreign key relationship with primary key(_id) of refereced model
     },
+    // sending multiple references in an array for onne to many relation kinda thing.
     dev_projects: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "projects",
@@ -64,12 +66,18 @@ const developerSchema = new mongoose.Schema(
     profile_pic: {
       type: String,
     },
+    technical_role: { // like engineer/researcher/designer.....
+      type: String,
+    },
   },
   {
     timestamps: true,
   },
 );
 
+// mongoose.model takes 2 arguments
+// 1st - Name of the collection
+// 2nd - Name of the schema
 const developerModel = mongoose.model("developers", developerSchema);
 
 module.exports = developerModel;

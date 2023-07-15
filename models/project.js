@@ -32,7 +32,7 @@ const projectSchema = new mongoose.Schema(
     },
     board: {
       type: String,
-      default: "Scrum",
+      default: "Scrum", // like agile, kanban
     },
     image: {
       type: String,
@@ -41,6 +41,7 @@ const projectSchema = new mongoose.Schema(
       type: String,
     },
     lead: {
+      // would need to send "_id" value for this field as populate query in the routes function based on objectId
       type: mongoose.Schema.Types.ObjectId,
       ref: "developers", // using ref key to establish a foreign key relationship with primary key(_id) of refereced model
     },
@@ -49,7 +50,32 @@ const projectSchema = new mongoose.Schema(
       ref: "organizations",
     },
     thumbnail: {
-      type: "String",
+      type: String,
+    },
+    hourly_rate: {
+      type: Number,
+    },
+    fixed_price: {
+      type: Number,
+    },
+    // sending multiple references in an array for onne to many relation kinda thing.
+    reviews: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "reviews",
+    },
+    ],
+    proposals: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "proposals",
+    }],
+    project_type: { // one-time/monthly/yearly
+      type: String,
+    },
+    required_personnel: { // like entry-level/exprerienced
+      type: String,
+    },
+    bookmark: { // to save a project
+      type: Boolean,
     },
   },
   {

@@ -46,6 +46,8 @@ app.use(fileUpload({
 app.use("/developers", router.developerRouter);
 app.use("/projects", router.projectRouter);
 app.use("/organizations", router.organizationRouter);
+app.use("/reviews", router.reviewRouter);
+app.use("/proposals", router.proposalRouter);
 
 // Middlware 4 - A global error handler
 // do not call like ()
