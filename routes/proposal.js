@@ -5,7 +5,7 @@ const ApiError = require("../utils/ApiError");
 
 router.route("/")
   .get(roleBasedAuthentication, (req, res, next) => {
-    Proposal.find()
+    Proposal.find().populate("developer").populate("project")
       .then((documents) => {
         res.status(200).json({
           message: "Fetched reviews successfully.",
