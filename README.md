@@ -125,6 +125,7 @@ npm init @eslint/config
 5. `/middleware` - Folder for middlewares
 6. `/config` - Folder for any configuration setups
 7. `/controllers` - To manage some business logic out of routes.
+
 ---
 
 #### Other setups :
@@ -149,6 +150,35 @@ npm i jsonwebtoken
   - Difference between the above two is that the syntax of a request entity for a 422 error is correct whereas the syntax of a request that generates a 400 error is incorrect.
 - `401` - Unauthorized access to Resource used in access_token verification
 - `404` - Resource not found.
+
+---
+
+## Application's capabilites : 
+
+1. [x] Daatabases : MongoDB Atlas is used to house data of Developers, Organizations, Projects, Proposals and Reviews with appropriate Schema. Apart from MongoDB, Cloudinary web service is used to handle and store multimedia.
+2. [x] RESTful API : The express API of the application follows all the REST API rules and provides CRUD operations on the API's entites.
+3. [x] Sorting & filtering : Approtiate endpoints are powered with the sorting and filtering quering parameters.
+4. [x] Verify user paramters : Specific fields like email and password and verified by express-validator.
+5. [x] Security : The API's routes are protected with authentication middlwares and SSL by hosting service.
+6. [x] Documentation  
+
+---
+
+## RESTful API 
+
+> **The backend follows the concept of RESTful(Representational State Transfer) APIs**
+
+- [x] Accept and respond with JSON
+- [x] Standard HTTP status codes
+- [x] No use of verbs in URL. Use nouns.
+- [x] Plural nouns to name a collection in URL
+- [x] Use resource nesting
+- [x] Use filtering, sorting to retrieve data
+- [x] Well compiled documentation
+- [x] Return error details in response body
+- [x] Use SSL (done with the help of hosting)
+- [x] Secure the API (with several middlewares)
+
 
 ---
 
