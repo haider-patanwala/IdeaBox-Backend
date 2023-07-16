@@ -1,10 +1,10 @@
 module.exports = {
   env: {
     browser: true,
-    commonjs: true,
+    commonjs: true, // because of NodeJS
     es2021: true,
   },
-  extends: 'airbnb-base',
+  extends: 'airbnb-base', // eslint extends base version because of a NodeJS app.
   overrides: [
     {
       env: {
