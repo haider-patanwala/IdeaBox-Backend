@@ -73,6 +73,7 @@ const projectSchema = new mongoose.Schema(
     },
     bookmark: { // to save a project
       type: Boolean,
+      default: false,
     },
   },
   {
