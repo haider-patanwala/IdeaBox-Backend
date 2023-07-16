@@ -68,7 +68,7 @@ router.route("/")
 router.route("/auth/register")
 
   // body() is an express-validator middleware
-  .post(body("password").isLength({ min: 8, max: 16 }), async (req, res, next) => {
+  .post(body("password").isLength({ min: 8, max: 16 }).withMessage("Password should be atleast 8 and maximum 16 characters"), async (req, res, next) => {
     const organization = req.body;
     const { password } = req.body;
     const file = req.files ? req.files.photo : null;
@@ -79,9 +79,11 @@ router.route("/auth/register")
       // 400 HTTP status code because the error would be related to invalid request payload and this is a severe error!
       return next(new ApiError(400, "Organization registration failed. Please provide a password.", `${path} : ${msg}`));
     }
+
+    // if express-validator throws errors of req.body
     if (!errors.isEmpty()) {
       const { msg, path } = errors.array()[0];
-      return next(new ApiError(400, "Organization registration failed. Provide password with min 8, max 16 characters. ", `${path} : ${msg}`));
+      return next(new ApiError(400, "Organization registration failed. Please check your inputs.", `${path} : ${msg}`));
     }
     try {
       const salt = await bcrypt.genSalt(parseInt(rounds, 10));
