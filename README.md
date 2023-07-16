@@ -68,7 +68,7 @@ npm init @eslint/config
   >  - [x] FILTER based on '*openToWork*' - <span style="color:deepskyblue">GET</span> `/developers?openToWork=true`
 - [x] Register new Developer - <span style="color:springgreen">POST</span> `/developers/auth/register` - *generates authToken too.*
 - [x] Login Developer - <span style="color:springgreen">POST</span> `/developers/auth/login` - *generates authToken too.*
-- [x] Retrieve specific Developer - *Protected* <span style="color:deepskyblue">GET</span> `/developers/:id`
+- [x] Retrieve specific Developer - <span style="color:deepskyblue">GET</span> `/developers/:id`
 - [x] Update specific Developer - *Protected* <span style="color:yellow">PATCH</span> `/developers/:id`
 - [x] Delete specific Developer - *Protected* <span style="color:red">DELETE</span> `/developers/:id`
 
@@ -143,8 +143,10 @@ npm i jsonwebtoken
 
 - `201` - Create/Register Resource.
 - `200` - OK for Updating/Deleting Resource.
-- `400` - Bad Request due to possible syntax errors/invalid request payload, etc
-- `422` - Unprocessible due to business-logic/input validations related issues.
+- `400` - Bad Request due to possible syntax errors/invalid request payload/failed the request validation like if the data is missing or if it has a wrong type, etc.
+- `422` - Server understands but Unprocessible due to business-logic/input validations related issues.
+  - 422 is less severe than 400. The request has reached the server. The server has acknowledged the request has got the basic structure right. But the information in the request body can't be parsed or understood.
+  - Difference between the above two is that the syntax of a request entity for a 422 error is correct whereas the syntax of a request that generates a 400 error is incorrect.
 - `401` - Unauthorized access to Resource used in access_token verification
 - `404` - Resource not found.
 
