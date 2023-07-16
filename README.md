@@ -52,7 +52,7 @@ npm init @eslint/config
    - A developer should be able to create, delete review on the organization they've worked with.
    - A organization should be able to create, delete review for the developer they've worked with.
 
-![Schema diagram](<public/Projekto scheme .png>)
+![Schema diagram](<public/Model_schema.png>)
 
 ---
 
