@@ -28,6 +28,7 @@ router.route("/")
     const {
       openToWork, city, sort, fname, lname, qualification,
     } = req.query;
+    // req.query helps for finding only those specific documents which are queried from the URL like /developers?fname=Meet&fname=Tarun
 
     // DEALING with case insensitive or not.
     // regex enables searching for partial values too. Like if mum is typed then Mumbai results will still come.
@@ -44,20 +45,19 @@ router.route("/")
     if (qualification) { // FOR CASE-INSENSITIVE SEARCHING
       queryObject.qualification = { $regex: qualification, $options: "i" };
     }
-    if (openToWork) {
+    if (openToWork) { // FOR FILTERING
       // this is a boolean field so no need to worry about making it case insensitive as boolean always should be case sensitive.
       queryObject.openToWork = openToWork;
     }
 
-    // `populate` is used to fetch the foreign key referenced document in the find response based on the keys passed as an argument to the method.
-    // req.query helps for finding only those specific documents which are queried from the URL like /developers?fname=Meet&fname=Tarun
-    // Sorting is achieved by sort("fname -city") function
     // had to put the find method in a variable as we needed to put sort over it again.
+    // `populate` is used to fetch the foreign key referenced document in the find response based on the keys passed as an argument to the method.
     let fetchedData = Developer.find(queryObject).populate("dev_organization").populate("dev_projects");
 
     // if user has written `?sort=fname,city` with multiple sort conditions in URL :
     if (sort) { // FOR SORTING BASE ON ANY KEY
       const sortFixed = sort.replace(",", " ");
+      // Sorting is achieved by sort("fname -city") function
       fetchedData = fetchedData.sort(sortFixed);
     }
 
@@ -65,7 +65,8 @@ router.route("/")
     fetchedData
       .then((documents) => {
         if (documents.length === 0) {
-          res.status(404).json({
+          // returns response of empty array with 'successful request' 200 code
+          res.status(200).json({
             message: "No developers data found. Insert some data please.",
             data: documents,
             errors: null,
@@ -82,7 +83,9 @@ router.route("/")
   });
 
 router.route("/auth/register")
-  .post(body("password").isLength({ min: 8, max: 16 }), async (req, res, next) => {
+
+  // body() is an express-validator middleware
+  .post(body("email").isEmail().withMessage("Enter a valid email"), body("password").isLength({ min: 8, max: 16 }).withMessage("Password should be atleast 8 and maximum 16 characters"), async (req, res, next) => {
     const developer = req.body;
     const { password } = req.body;
     const file = req.files ? req.files.photo : null;
@@ -90,12 +93,14 @@ router.route("/auth/register")
 
     if (!password) {
       const { msg, path } = errors.array()[0];
-      // 400 HTTP status code because the error would be related to invalid request payload.
+      // 400 HTTP status code because the error would be related to invalid request payload and this is a severe error!
       return next(new ApiError(400, "Developer registration failed. Please provide a password.", `${path} : ${msg}`));
     }
+
+    // if express-validator throws errors of req.body
     if (!errors.isEmpty()) {
       const { msg, path } = errors.array()[0];
-      return next(new ApiError(400, "Developer registration failed. Provide password with min 8, max 16 characters. ", `${path} : ${msg}`));
+      return next(new ApiError(400, "Developer registration failed. Please check your inputs.", `${path} : ${msg}`));
     }
     try {
       const salt = await bcrypt.genSalt(parseInt(rounds, 10));
@@ -104,6 +109,7 @@ router.route("/auth/register")
       const securedDeveloper = { ...developer, password: securedPassword };
 
       if (file) {
+        // A promise was needed to handle the errors and process the result using then blocks so promisified the cloudinary method as it is not a promise by default.
         const cloudinaryUpload = promisify(cloudinary.uploader.upload);
         return cloudinaryUpload(file.tempFilePath)
           .then((result) => {
@@ -122,6 +128,7 @@ router.route("/auth/register")
             }
           });
       }
+      // if the file is not sent in request then do normal operations
       return controller.registerDeveloper(res, next, securedDeveloper, file);
     } catch (error) {
       return next(new ApiError(422, "Error creating developer..", error.toString()));
@@ -157,7 +164,8 @@ router.route("/auth/login")
   });
 
 router.route("/:uid")
-  .get(isDeveloperAuthenticated, (req, res, next) => {
+
+  .get((req, res, next) => {
     Developer.findOne({ uid: req.params.uid }).populate("dev_organization").populate("dev_projects")
       .then((document) => {
         if (!document) {
@@ -172,6 +180,7 @@ router.route("/:uid")
       .catch((error) => next(new ApiError(422, "Error fetching developer.", error.toString())));
   })
 
+  // isDeveloperAuthenticated is a middleware
   .patch(isDeveloperAuthenticated, (req, res, next) => {
     const developer = req.body;
     const file = req.files ? req.files.photo : null;
@@ -196,6 +205,7 @@ router.route("/:uid")
             }
           });
       } else {
+        // if the file is not sent in request then do normal operations
         controller.updateDeveloper(req, res, next, developer, file);
       }
     } catch (error) {
@@ -203,6 +213,7 @@ router.route("/:uid")
     }
   })
 
+  // isDeveloperAuthenticated is a middleware
   .delete(isDeveloperAuthenticated, (req, res, next) => {
     Developer.deleteOne({ uid: req.params.uid })
       .then((document) => {
@@ -218,6 +229,6 @@ router.route("/:uid")
           errors: null,
         });
       })
-      .catch((error) => next(new ApiError(400, "Error deleting developer.", error.toString())));
+      .catch((error) => next(new ApiError(422, "Error deleting developer.", error.toString())));
   });
 module.exports = router;

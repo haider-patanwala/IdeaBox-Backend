@@ -34,7 +34,7 @@ const projectSchema = new mongoose.Schema(
       type: String,
       default: "Scrum", // like agile, kanban
     },
-    image: {
+    thumbnail: {
       type: String,
     },
     timeframe: {
@@ -48,9 +48,6 @@ const projectSchema = new mongoose.Schema(
     proj_organization: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "organizations",
-    },
-    thumbnail: {
-      type: String,
     },
     hourly_rate: {
       type: Number,

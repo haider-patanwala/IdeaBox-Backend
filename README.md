@@ -52,7 +52,7 @@ npm init @eslint/config
    - A developer should be able to create, delete review on the organization they've worked with.
    - A organization should be able to create, delete review for the developer they've worked with.
 
-![Schema diagram](<public/Projekto scheme .png>)
+![Schema diagram](<public/Model_schema.png>)
 
 ---
 
@@ -68,7 +68,7 @@ npm init @eslint/config
   >  - [x] FILTER based on '*openToWork*' - <span style="color:deepskyblue">GET</span> `/developers?openToWork=true`
 - [x] Register new Developer - <span style="color:springgreen">POST</span> `/developers/auth/register` - *generates authToken too.*
 - [x] Login Developer - <span style="color:springgreen">POST</span> `/developers/auth/login` - *generates authToken too.*
-- [x] Retrieve specific Developer - *Protected* <span style="color:deepskyblue">GET</span> `/developers/:id`
+- [x] Retrieve specific Developer - <span style="color:deepskyblue">GET</span> `/developers/:id`
 - [x] Update specific Developer - *Protected* <span style="color:yellow">PATCH</span> `/developers/:id`
 - [x] Delete specific Developer - *Protected* <span style="color:red">DELETE</span> `/developers/:id`
 
@@ -125,6 +125,7 @@ npm init @eslint/config
 5. `/middleware` - Folder for middlewares
 6. `/config` - Folder for any configuration setups
 7. `/controllers` - To manage some business logic out of routes.
+
 ---
 
 #### Other setups :
@@ -143,10 +144,41 @@ npm i jsonwebtoken
 
 - `201` - Create/Register Resource.
 - `200` - OK for Updating/Deleting Resource.
-- `400` - Bad Request due to possible syntax errors/invalid request payload, etc
-- `422` - Unprocessible due to business-logic/input validations related issues.
+- `400` - Bad Request due to possible syntax errors/invalid request payload/failed the request validation like if the data is missing or if it has a wrong type, etc.
+- `422` - Server understands but Unprocessible due to business-logic/input validations related issues.
+  - 422 is less severe than 400. The request has reached the server. The server has acknowledged the request has got the basic structure right. But the information in the request body can't be parsed or understood.
+  - Difference between the above two is that the syntax of a request entity for a 422 error is correct whereas the syntax of a request that generates a 400 error is incorrect.
 - `401` - Unauthorized access to Resource used in access_token verification
 - `404` - Resource not found.
+
+---
+
+## Application's capabilites : 
+
+1. [x] Daatabases : MongoDB Atlas is used to house data of Developers, Organizations, Projects, Proposals and Reviews with appropriate Schema. Apart from MongoDB, Cloudinary web service is used to handle and store multimedia.
+2. [x] RESTful API : The express API of the application follows all the REST API rules and provides CRUD operations on the API's entites.
+3. [x] Sorting & filtering : Approtiate endpoints are powered with the sorting and filtering quering parameters.
+4. [x] Verify user paramters : Specific fields like email and password and verified by express-validator.
+5. [x] Security : The API's routes are protected with authentication middlwares and SSL by hosting service.
+6. [x] Documentation  
+
+---
+
+## RESTful API 
+
+> **The backend follows the concept of RESTful(Representational State Transfer) APIs**
+
+- [x] Accept and respond with JSON
+- [x] Standard HTTP status codes
+- [x] No use of verbs in URL. Use nouns.
+- [x] Plural nouns to name a collection in URL
+- [x] Use resource nesting
+- [x] Use filtering, sorting to retrieve data
+- [x] Well compiled documentation
+- [x] Return error details in response body
+- [x] Use SSL (done with the help of hosting)
+- [x] Secure the API (with several middlewares)
+
 
 ---
 
