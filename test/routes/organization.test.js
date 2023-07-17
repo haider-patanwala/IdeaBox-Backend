@@ -74,4 +74,44 @@ describe("Organization API", () => {
       })
       .catch((e) => done(e));
   });
+  // test cases for PATCH route
+  it("PATCH the organization", (done) => {
+    api.patch(`/organizations/${uid}`)
+      .set("authorization", authToken)
+      .attach("photo", "test/resources/company.png")
+      .field("domain", "IT")
+      .then((response) => {
+        console.log("PATCH token-----------", authToken);
+        console.log("PATCH uid-----------", uid);
+        console.log("UPDATED --------------", response.body);
+
+        expect(response.status).to.equal(200);
+
+        expect(response.body).to.have.property("message");
+        expect(response.body).to.have.property("message", "Updated organization successfully.");
+        expect(response.body).to.have.property("errors", null);
+        done();
+      })
+      .catch((e) => done(e));
+  });
+
+  // test cases for DELETE route
+  it("DELETE organization", async () => {
+    const deletePromise = api.delete(`/organizations/${uid}`)
+      .set("authorization", authToken)
+      .then(async (response) => {
+        console.log("DELETE token-----------", authToken);
+        console.log("DELETE uid-----------", uid);
+        console.log("DELETED-------------", response.body);
+
+        expect(response.status).to.equal(200);
+
+        expect(response.body).to.have.property("data");
+        expect(response.body).to.have.property("message", "Deleted organization successfully.");
+        expect(response.body).to.have.property("errors", null);
+
+        await deletePromise;
+        await organizationModel.deleteMany({});
+      });
+  });
 });
