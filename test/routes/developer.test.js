@@ -67,7 +67,7 @@ describe("Developer API", () => {
 
   // test cases for POST route
   it("POST a developer", (done) => {
-    api.post("/developers")
+    api.post("/developers/auth/register")
       .attach("photo", "test/resources/developer.jpg")
       .field("fname", "Meet")
       .field("lname", "Makwana")
