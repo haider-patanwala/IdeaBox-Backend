@@ -229,6 +229,7 @@ npm i -D mocha chai supertest nyc
 5. Enable mocha in the `.eslintrc.js`
 6. Added test script in `package.json` and ran `npm run test`.
    1. Also added a script for coverage and can run it through `npm run test:cov`
+   2. Be careful in naming and avoid typos.
 7. To create a test we use `describe()` which describes a "suite"(a group of related test cases) with the given 'title' and `callback fn` containing nested suites.
 
 

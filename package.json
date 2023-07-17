@@ -2,7 +2,8 @@
   "scripts": {
     "start": "node server.js",
     "start:dev": "npx nodemon server.js",
-    "test": "mocha --exit ./test/**/*.test.js"
+    "test": "mocha --exit ./test/**/*.test.js",
+    "test:cov": "nyc --reporter html --reporter text -t coverage mocha --exit ./test/**/*.test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
