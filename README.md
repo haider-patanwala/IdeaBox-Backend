@@ -217,11 +217,23 @@ You can send a response to the client only once when you send more than one time
 3. For data hosted on MongoDB Atlas, MongoDB offers an improved full-text search solution,  **Atlas Search**, which has its own `$regex` operator.
 4. FOr sorting, using mongoose `sort()` [ref here](https://mongoosejs.com/docs/api/query.html#Query.prototype.sort()). 
 
+##### <u>API Testing :-
+
+1. Installed packages for testing as dev dependencies.
+```bash
+npm i -D mocha chai supertest nyc
+```
+2. Created `/test` folder.
+3. When creating `/test` folder, try to mimic the folder structure of the project in it.
+4. `Mocha` is gonne look for `test` folder.
+5. Enable mocha in the `.eslintrc.js`
+6. Added test script in `package.json` and ran `npm run test`.
+   1. Also added a script for coverage and can run it through `npm run test:cov`
+7. To create a test we use `describe()` which describes a "suite"(a group of related test cases) with the given 'title' and `callback fn` containing nested suites.
+
+
 #### Todo :
 
 developer schema :
 1. relation "organization" (new/option)...
 2. add "projects" - role.(figure out this)
-
-- Input body Validation
-- Ask sir about HTP status code consistency.
