@@ -4,6 +4,7 @@ const server = require("../../server");
 const developerModel = require("../../models/developer");
 
 let api;
+let uid;
 
 describe("Developer API", () => {
   before("Initialize API in before block", (done) => {
@@ -88,10 +89,33 @@ describe("Developer API", () => {
       .field("github", "http://github.com/meetmakwana19")
       .field("technical_role", "Full Stack Web Developer")
       .then((response) => {
+        uid = response.body.data.uid;
         expect(response.status).to.equal(201);
+
         expect(response.body).to.have.property("message");
-        expect(response.body).to.have.property("data");
-        expect(response.body).to.have.property("errors");
+        expect(response.body).to.have.property("data", "Developer created successfully.");
+        expect(response.body).to.have.property("errors", null);
+        expect(response.body.data).to.have.property("access_token");
+        expect(response.body.data).to.have.property("developer");
+
+        done();
+      })
+      .catch(done());
+  });
+  // test cases for PATCH route
+  it("PATCH a developer", (done) => {
+    api.patch(`/developers/${uid}`)
+      .attach("photo", "test/resources/developer.jpg")
+      .field("qualification", "BTech in Computer")
+      .field("city", "Delhi")
+      .field("openToWork", false)
+      .then((response) => {
+        expect(response.status).to.equal(200);
+
+        expect(response.body).to.have.property("message");
+        expect(response.body).to.have.property("data", "Developer updated successfully.");
+        expect(response.body).to.have.property("errors", null);
+
         done();
       })
       .catch(done());
