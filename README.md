@@ -215,7 +215,8 @@ You can send a response to the client only once when you send more than one time
     })
    ```
 3. For data hosted on MongoDB Atlas, MongoDB offers an improved full-text search solution,  **Atlas Search**, which has its own `$regex` operator.
-4. FOr sorting, using mongoose `sort()` [ref here](https://mongoosejs.com/docs/api/query.html#Query.prototype.sort()). 
+4. For sorting, using mongoose `sort()` [ref here](https://mongoosejs.com/docs/api/query.html#Query.prototype.sort()). 
+5. Promises .then .catch and aysnc/await are 2 different things for aynshronous behaviouors so one must use any one.
 
 ##### <u>API Testing :-
 
@@ -228,10 +229,23 @@ npm i -D mocha chai supertest nyc
 4. `Mocha` is gonne look for `test` folder.
 5. Enable mocha in the `.eslintrc.js`
 6. Added test script in `package.json` and ran `npm run test`.
-   1. Also added a script for coverage and can run it through `npm run test:cov`
-   2. Be careful in naming and avoid typos.
+   1. 
+   2. Also added a script for coverage and can run it through `npm run test:cov`
+   3. Be careful in naming and avoid typos.
 7. To create a test we use `describe()` which describes a "suite"(a group of related test cases) with the given 'title' and `callback fn` containing nested suites.
-
+8. `done()` function is used to handle asynchronous operations in test cases such as making HTTP requests, interacting with databases, or using timers, it's important to notify the testing framework when the asynchronous operations have completed.  
+   1. This ensures that the test case doesn't complete prematurely or timeout before the asynchronous operations finish.
+   2. It is typically passed as a parameter to the test case function, and it needs to be invoked to signal the completion of the test case.
+   3. The testing framework waits for `done()` to be called before moving on to the next test case or completing the test suite.
+   4. If `done()` is not called at the end of test suite then an error like following can occur. 
+```bash
+Error: Timeout of 10000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves.
+```
+9. Ensure the URL paths of test cases are started with a slash like `/developers` otherwise the following error can come :
+```bash
+Error: ECONNREFUSED: Connection refused
+```
+10. s
 
 #### Todo :
 
