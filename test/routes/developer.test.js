@@ -12,6 +12,7 @@ describe("Developer API", () => {
     server
       .then((resultedApp) => {
         api = request(resultedApp);
+        // done();
       })
       .then(() => done())
       .catch(done);
@@ -21,7 +22,7 @@ describe("Developer API", () => {
       {
         fname: "Meet",
         lname: "Makwana",
-        email: "meet@gmail.com",
+        email: "meetm@gmail.com",
         password: "12345678",
         phone: 9876543210,
         qualification: "BE in Computer",
@@ -47,10 +48,13 @@ describe("Developer API", () => {
 
   // SHIFTING THE PURGING LOGIC AT THE END OF DELETE ROUTE'S TEST CASE SINCE THIS GETS FIRED BEFORE PATCH/DELETE COMPLETES EXECUTION WITH THE ACCESS_TOKEN GENERATE BY PREVIOUS' POST OPERATION.
   // DUE TO ASYNC NATURE OF AFTER(), IT DELETES THE DEVELOPER FIRST ONLY AND THE VERIFICATION OF ACCESS_TOKEN FAILS FOR THE CONSEQUENT PATCH/DELETE TEST CASES.
+
+  // --------IGNORE from here
   // after("Purge the dummy data after testing is completed by the describe() interface", async () => {
   //   console.log("I SHOULD BE EXECUTED AFTER DELETE");
   //   await developerModel.deleteMany({});
   // });
+  // --------IGNORE till here
 
   // test cases for GET all route
   it("GET all developers", async () => {
@@ -67,12 +71,12 @@ describe("Developer API", () => {
   });
 
   // test cases for POST route
-  it("POST a developer", async () => {
-    await api.post("/developers/auth/register")
+  it("POST a developer", (done) => {
+    api.post("/developers/auth/register")
       .attach("photo", "test/resources/developer.jpg")
       .field("fname", "Meet")
       .field("lname", "Makwana")
-      .field("email", "meetm@gmail.com")
+      .field("email", "meetmm@gmail.com")
       .field("password", "12345678")
       .field("phone", "9876543210")
       .field("qualification", "BE in Computer")
@@ -103,14 +107,19 @@ describe("Developer API", () => {
         expect(response.body).to.have.property("errors", null);
         expect(response.body.data).to.have.property("access_token");
         expect(response.body.data).to.have.property("developer");
-      });
+        done();
+      })
+      .catch(done);
+    // --------IGNORE from here
     //  Allowing done() to be passed as a reference rather than invoking it immediately. like catch(done())
     // This allows the console.log() to work properly in the above then block.
+    // .catch((done) => done());
+    // --------IGNORE till here
   });
 
   // test cases for PATCH route
-  it("PATCH a developer", async () => {
-    await api.patch(`/developers/${uid}`)
+  it("PATCH a developer", (done) => {
+    api.patch(`/developers/${uid}`)
       .set("authorization", `${authToken}`)
       .attach("photo", "test/resources/developer.jpg")
       .field("qualification", "BTech in Computer")
@@ -125,7 +134,9 @@ describe("Developer API", () => {
         expect(response.body).to.have.property("message");
         expect(response.body).to.have.property("message", "Developer updated successfully.");
         expect(response.body).to.have.property("errors", null);
-      });
+        done();
+      })
+      .catch(done);
   });
 
   // test cases for DELETE route
@@ -136,17 +147,32 @@ describe("Developer API", () => {
     const deletePromise = api.delete(`/developers/${uid}`)
       .set("authorization", `${authToken}`)
       .then(async (response) => {
-        console.log("DELETED-------------", response);
+        console.log("DELETED Developer-------------", response.body);
+
         expect(response.status).to.equal(200);
 
-        expect(response.body).to.have.property("message");
-        expect(response.body).to.have.property("data", "Developer deleted successfully.");
+        expect(response.body).to.have.property("data");
+        expect(response.body).to.have.property("message", "Developer deleted successfully.");
         expect(response.body).to.have.property("errors", null);
-
-        await deletePromise;
-        await developerModel.deleteMany({});
-        // .then(() => done())
-        // .catch(done);
       });
+    // remember to call the promise and delete method outside the promise definition over here
+    await deletePromise;
+
+    // await developerModel.deleteMany({});
+
+    // deleting just the recently added one which was inserted by our test suite.
+    // We need atleast one developer in test db as the access_token is used in the proposal.test.js & review.test.js
+    // if all documents are deleted then there would be nothing to verify the access_token used in proposal.test.js & review.test.js
+    await developerModel.findOneAndDelete({}, { sort: { _id: -1 } })
+      .then((result) => {
+        console.log("Deleting the recently added document------->", result);
+      })
+      .catch((error) => {
+        console.log("Error in deleting the recently added document------->", error);
+      });
+
+    // then and catch logic is not needed when using async/await
+    // .then(() => done())
+    // .catch(done);
   });
 });
