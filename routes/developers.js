@@ -72,6 +72,7 @@ router.route("/")
             errors: null,
           });
         } else {
+          // eslint-disable-next-line no-unused-vars
           const headers = {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
