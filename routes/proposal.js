@@ -17,7 +17,7 @@ router.route("/")
           });
         } else {
           res.status(200).json({
-            message: "Fetched reviews successfully.",
+            message: "Fetched proposals successfully.",
             data: documents,
             errors: null,
           });
@@ -32,7 +32,7 @@ router.route("/")
     Proposal.create(proposal)
       .then((document) => {
         res.status(201).json({
-          message: "Posted reviews successfully",
+          message: "Posted proposals successfully.",
           data: document,
           errors: null,
         });
@@ -52,7 +52,7 @@ router.route("/:uid")
           throw Error("Proposal not found.");
         }
         res.status(200).json({
-          message: "Updating proposal successfully",
+          message: "Updated proposal successfully.",
           data: document,
           errors: null,
         });
@@ -68,7 +68,7 @@ router.route("/:uid")
           throw Error("Proposal not found.");
         }
         res.status(200).json({
-          message: "Proposal deleted successfully",
+          message: "Deleted proposal successfully.",
           data: document,
           errors: null,
         });

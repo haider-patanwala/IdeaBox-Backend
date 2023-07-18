@@ -9,7 +9,10 @@ const secret = process.env.JWT_SECRET;
 const registerDeveloper = (res, next, developer, file) => {
   Developer.create(developer)
     .then((document) => {
-      const token = jwt.sign(document.email, secret);
+      const emailObj = {
+        email: document.email,
+      };
+      const token = jwt.sign(emailObj, secret);
       res.status(201).json({
         message: "Developer created successfully.",
         data: {

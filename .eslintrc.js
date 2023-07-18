@@ -1,10 +1,11 @@
 module.exports = {
   env: {
     browser: true,
-    commonjs: true,
+    commonjs: true, // because of NodeJS
     es2021: true,
+    mocha: true, // so that ESLint can understand that mocha is being used globally and it prevents the  unneccessary warnings of undefined methods.
   },
-  extends: 'airbnb-base',
+  extends: 'airbnb-base', // eslint extends base version because of a NodeJS app.
   overrides: [
     {
       env: {

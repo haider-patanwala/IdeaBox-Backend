@@ -182,46 +182,10 @@ npm i jsonwebtoken
 
 ---
 
-#### Learnings :
-
-1. Might get the following errors in console : 
-```bash
-Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
-```
-To resolve it, look for multiple `res.status()` being sent from one request. Look for `return` statements carefully too and handle it appropriately. Or look for conditional logic like `if..else` blocks.
-
-You can send a response to the client only once when you send more than one time that will generate the error
-2. About ExpressJS' `request` object parts : 
-   1. `req.body` - Generally used in POST/PUT requests when we need to send data to the server. Remember to use `express.json()` middleware to parse request body else you'll get an error
-   2. `req.params` - These are properties attached to the url i.e named route parameters. You prefix the parameter name with a colon ( `:` ) when writing your routes.
-   ```javascript
-    app.get('/giraffe/:number', (req, res) => {
-        console.log(req.params.number)
-    })
-
-   ```
-   ```bash
-    GET  http://localhost:3000/giraffe/1
-   ```
-   3. `req.query` - Mostly used for searching,sorting, filtering, pagination, e.t.c. It written as key=value preceeded by `?`. We can add multiple queries using `&` operator in the URL.
-   ```bash
-    GET  http://localhost:3000/animals?page=10
-    GET  http://localhost:3000/animals?page=10&section=2
-   ```
-   ```javascript
-    app.get('/animals', ()=>{
-        Animals.find(req.query)
-        console.log(req.query.page) // 10
-    })
-   ```
-3. For data hosted on MongoDB Atlas, MongoDB offers an improved full-text search solution,  **Atlas Search**, which has its own `$regex` operator.
-4. FOr sorting, using mongoose `sort()` [ref here](https://mongoosejs.com/docs/api/query.html#Query.prototype.sort()). 
-
 #### Todo :
 
 developer schema :
 1. relation "organization" (new/option)...
 2. add "projects" - role.(figure out this)
-
-- Input body Validation
-- Ask sir about HTP status code consistency.
+3. Standardized response messages.
+4. Ask sir about async/await vs done promises in testing and veirfy the usage of aysnc/await in delete test cases.

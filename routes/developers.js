@@ -72,7 +72,14 @@ router.route("/")
             errors: null,
           });
         } else {
+          // eslint-disable-next-line no-unused-vars
+          const headers = {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST,PATCH,OPTIONS',
+          };
           res.status(200).json({
+            // headers,
             message: "Developers fetched successfully",
             data: documents,
             errors: null,
@@ -149,6 +156,7 @@ router.route("/auth/login")
           throw Error("Incorrect Password.");
         }
 
+        // sign with { email } only so that the key can be later on checked by the roleBasedAuthentication middleware.
         const token = jwt.sign({ email }, secret);
 
         res.status(200).json({

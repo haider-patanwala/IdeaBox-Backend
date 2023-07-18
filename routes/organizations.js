@@ -131,6 +131,7 @@ router.route("/auth/login")
           throw Error("Incorrect Password.");
         }
 
+        // sign with { uid } only so that the key can be later on checked by the roleBasedAuthentication middleware.
         const token = jwt.sign({ uid }, secret);
 
         res.status(200).json({

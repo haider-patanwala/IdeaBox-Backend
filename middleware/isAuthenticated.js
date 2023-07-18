@@ -12,6 +12,9 @@ const isDeveloperAuthenticated = (req, res, next) => {
   if (req.headers.authorization) {
     // also checking if the value of access token is right or not.
     const verification = jwt.verify(req.headers.authorization, secret);
+
+    // the following should be used for testing as weirdly jwt.verify() was return 2 different kind of objects
+    // return Developer.findOne({ email: verification })
     return Developer.findOne({ email: verification.email })
       .then((document) => {
         if (!document) {
@@ -35,6 +38,7 @@ const isOrganizationAuthenticated = (req, res, next) => {
     // also checking if the value of access token is right or not.
     const verification = jwt.verify(req.headers.authorization, secret);
     return Organization.findOne({ uid: verification.uid })
+    // return Organization.findOne({ uid: verification })
       .then((document) => {
         if (!document) {
           throw Error("Session expired. Please login again.");
