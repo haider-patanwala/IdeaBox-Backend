@@ -17,7 +17,7 @@ router.route("/")
           });
         } else {
           res.status(200).json({
-            message: "Fetched reviews successfully.",
+            message: "Fetched proposals successfully.",
             data: documents,
             errors: null,
           });
@@ -32,7 +32,7 @@ router.route("/")
     Proposal.create(proposal)
       .then((document) => {
         res.status(201).json({
-          message: "Posted reviews successfully",
+          message: "Posted proposals successfully.",
           data: document,
           errors: null,
         });
