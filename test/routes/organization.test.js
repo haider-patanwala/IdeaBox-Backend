@@ -102,7 +102,7 @@ describe("Organization API", () => {
       .then(async (response) => {
         console.log("DELETE token-----------", authToken);
         console.log("DELETE uid-----------", uid);
-        console.log("DELETED-------------", response.body);
+        console.log("DELETED Org-------------", response.body);
 
         expect(response.status).to.equal(200);
 
@@ -112,6 +112,17 @@ describe("Organization API", () => {
       });
     // remember to call the promise and delete method outside the promise definition over here
     await deletePromise;
-    await organizationModel.deleteMany({});
+
+    // await organizationModel.deleteMany({});
+    // deleting just the recently added one which was inserted by our test suite.
+    // We need atleast one organization in test db as the access_token of org is used in the project.test.js
+    // if all documents are deleted then there would be nothing to verify the org's access_token upon in project.test.js
+    await organizationModel.findOneAndDelete({}, { sort: { _id: -1 } })
+      .then((result) => {
+        console.log("Deleting the recently added document------->", result);
+      })
+      .catch((error) => {
+        console.log("Error in deleting the recently added document------->", error);
+      });
   });
 });
