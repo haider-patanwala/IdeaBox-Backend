@@ -7,7 +7,7 @@ let api;
 let uid;
 let authToken;
 
-describe.only("Organization API", () => {
+describe("Organization API", () => {
   before("Initialize API in before block", (done) => {
     server
       .then((resultedApp) => {
