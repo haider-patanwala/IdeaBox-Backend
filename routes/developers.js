@@ -72,7 +72,13 @@ router.route("/")
             errors: null,
           });
         } else {
+          const headers = {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST,PATCH,OPTIONS',
+          };
           res.status(200).json({
+            headers,
             message: "Developers fetched successfully",
             data: documents,
             errors: null,
