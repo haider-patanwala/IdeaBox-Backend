@@ -175,4 +175,42 @@ describe("Developer API", () => {
     // .then(() => done())
     // .catch(done);
   });
+
+  it("Produce express-validator error", (done) => {
+    api.post("/developers/auth/register")
+      .send({
+        password: "1234567",
+      })
+      .then((response) => {
+        expect(response.status).to.equal(400);
+
+        expect(response.body).to.have.property("message", "Developer registration failed. Please check your inputs.");
+        expect(response.body).to.have.property("error");
+        expect(response.body.error).to.equal("email : Enter a valid email");
+        done();
+      })
+      .catch((error) => {
+        console.log("Errors----", error);
+        done(error);
+      });
+  });
+
+  it("Produce internal server error", (done) => {
+    api.post("/developers/auth/register")
+      .send("fname")
+      .set("Content-Type", "application/json")
+      .then((response) => {
+        console.log("got----------", response);
+        expect(response.status).to.equal(400);
+
+        expect(response.body).to.have.property("message", "Internal Server Error.");
+        expect(response.body).to.have.property("error", "Unexpected token f in JSON at position 0");
+        // expect(response.body.error).to.equal("email : Enter a valid email");
+        done();
+      })
+      .catch((error) => {
+        console.log("Errors----", error);
+        done(error);
+      });
+  });
 });
