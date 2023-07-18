@@ -197,7 +197,8 @@ describe("Developer API", () => {
 
   it("Produce internal server error", (done) => {
     api.post("/developers/auth/register")
-      .send("fname")
+      .send("fname") // sending a wrong JSON payload with just key
+      // so setting content-type header is essesntial to throw an error, without it the error wont be thrown.
       .set("Content-Type", "application/json")
       .then((response) => {
         console.log("got----------", response);
