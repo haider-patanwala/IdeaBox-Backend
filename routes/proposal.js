@@ -52,7 +52,7 @@ router.route("/:uid")
           throw Error("Proposal not found.");
         }
         res.status(200).json({
-          message: "Updating proposal successfully",
+          message: "Updated proposal successfully.",
           data: document,
           errors: null,
         });
@@ -68,7 +68,7 @@ router.route("/:uid")
           throw Error("Proposal not found.");
         }
         res.status(200).json({
-          message: "Proposal deleted successfully",
+          message: "Deleted proposal successfully.",
           data: document,
           errors: null,
         });
