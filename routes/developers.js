@@ -78,7 +78,7 @@ router.route("/")
             'Access-Control-Allow-Methods': 'POST,PATCH,OPTIONS',
           };
           res.status(200).json({
-            headers,
+            // headers,
             message: "Developers fetched successfully",
             data: documents,
             errors: null,
