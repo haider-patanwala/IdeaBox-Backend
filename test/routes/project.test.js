@@ -2,12 +2,14 @@ const request = require("supertest"); // for HTTP requests testing
 const { expect } = require("chai");
 const server = require("../../server");
 const projectModel = require("../../models/project"); // only for before and after hooks
+require("dotenv").config();
+
+const authToken = process.env.ORG_AUTH_TOKEN;
 
 let api;
 let uid;
-const authToken = "eyJhbGciOiJIUzI1NiJ9.b3JnXzUxNDk4Mjkz.7anSG1CQe6iDAK75rBXsvjxn8yky35O-rKNscZGST8s";
 
-describe.only("Project API", () => {
+describe("Project API", () => {
   before("Initialize API in before block", (done) => {
     server
       .then((resultedApp) => {
@@ -109,7 +111,7 @@ describe.only("Project API", () => {
       .then(async (response) => {
         console.log("DELETE token-----------", authToken);
         console.log("DELETE uid-----------", uid);
-        console.log("DELETED-------------", response.body);
+        console.log("DELETED Project-------------", response.body);
 
         expect(response.status).to.equal(200);
 
