@@ -20,6 +20,7 @@ describe('Reviews API', () => {
     })
       .catch(done);
   });
+
   // test cases for POST route
   it("POST a review", (done) => {
     api.post("/reviews")
@@ -36,6 +37,35 @@ describe('Reviews API', () => {
         expect(response.body).to.have.property("message", "Review posted successfully");
         expect(response.body).to.have.property("data");
         expect(response.body).to.have.property("errors", null);
+
+        done();
+      })
+      .catch(done);
+  });
+
+  // test cases for POST route
+  it("POST a review with invalid token", (done) => {
+    api.post("/reviews")
+      .set("authorization", "yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJvcmdfNjk1NzQ4NzQiLCJpYXQiOjE2ODk0Mzk5MjZ9.zxN1FqGIl1dODB2kxWVZoSmarqJOnVag0prUcgxtMOA")
+      .then((response) => {
+        expect(response.status).to.equal(401);
+
+        expect(response.body).to.have.property("message", "Invalid authorization token.");
+        expect(response.body).to.not.have.property("error");
+
+        done();
+      })
+      .catch(done);
+  });
+
+  // test cases for POST route
+  it("POST a review with no token", (done) => {
+    api.post("/reviews")
+      .then((response) => {
+        expect(response.status).to.equal(400);
+
+        expect(response.body).to.have.property("message", "Missing authorization token.");
+        expect(response.body).to.not.have.property("error");
 
         done();
       })

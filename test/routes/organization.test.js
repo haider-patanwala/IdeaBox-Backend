@@ -256,6 +256,20 @@ describe("Organization API", () => {
   });
 
   // test cases for PATCH route
+  it("PATCH the organization without authorization token", (done) => {
+    api.patch(`/organizations/${uid}xx`)
+      // .set("authorization", authToken)
+      .field("domain", "IT")
+      .then((response) => {
+        expect(response.status).to.equal(400);
+
+        expect(response.body).to.have.property("redirect", false);
+        done();
+      })
+      .catch((e) => done(e));
+  });
+
+  // test cases for PATCH route
   it("PATCH the organization wihtout file", (done) => {
     api.patch(`/organizations/${uid}`)
       .set("authorization", authToken)
@@ -312,6 +326,21 @@ describe("Organization API", () => {
         expect(response.body).to.not.have.property("data");
         expect(response.body).to.have.property("message", "Error deleting organization.");
         expect(response.body).to.have.property("error", "Error: Organization not found");
+      });
+    // remember to call the promise and delete method outside the promise definition over here
+    await deletePromise;
+  });
+
+  // test cases for DELETE route
+  it("DELETE organization with expired authtoken", async () => {
+    const deletePromise = api.delete(`/organizations/${uid}xx`)
+      .set("authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJvcmdfNjk1NzQ4NzQiLCJpYXQiOjE2ODk0Mzk5MjZ9.zxN1FqGIl1dODB2kxWVZoSmarqJOnVag0prUcgxtMOA")
+      .then(async (response) => {
+        expect(response.status).to.equal(422);
+
+        expect(response.body).to.not.have.property("data");
+        expect(response.body).to.have.property("message", "Error in authentication operation.");
+        expect(response.body).to.have.property("error", "Error: Session expired. Please login again.");
       });
     // remember to call the promise and delete method outside the promise definition over here
     await deletePromise;
