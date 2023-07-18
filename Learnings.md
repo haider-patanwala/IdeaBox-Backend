@@ -33,8 +33,29 @@ You can send a response to the client only once when you send more than one time
 3. For data hosted on MongoDB Atlas, MongoDB offers an improved full-text search solution,  **Atlas Search**, which has its own `$regex` operator.
 4. For sorting, using mongoose `sort()` [ref here](https://mongoosejs.com/docs/api/query.html#Query.prototype.sort()). 
 5. Promises .then .catch and aysnc/await are 2 different things for aynshronous behaviouors so one must use any one.
+6. Signing JWT token and Verifying it must be done in same manner like the following : 
+```javascript
+// on login
+console.log({ email }); // { email: 'meet@gmail.com' }
+const token = jwt.sign({ email }, secret); 
 
-### <u>API Testing :-
+// on verification
+const verification = jwt.verify(req.headers.authorization, secret); 
+console.log(verification); // { email: 'meet@gmail.com' }
+return Developer.findOne({ email: verification.email })
+```
+OR the following... but this is avoided since we cant check the token type when using a combined authenticator like `roleBasedAuthentication` middleware.
+```javascript
+console.log(email); // meet@gmail.com
+const token = jwt.sign(email, secret); 
+
+// on verification
+const verification = jwt.verify(req.headers.authorization, secret); 
+console.log(verification); // meet@gmail.com
+return Developer.findOne({ email: verification })
+```
+
+### <u>API Testing</u> :-
 
 1. Installed packages for testing as dev dependencies.
 ```bash
@@ -61,4 +82,5 @@ Error: Timeout of 10000ms exceeded. For async tests and hooks, ensure "done()" i
 ```bash
 Error: ECONNREFUSED: Connection refused
 ```
-10. s
+10. `.only` used with `decribe.only()` will run only that test suite.
+11. `.skip` used with `describe.skip()` will skip that specific test suite.
