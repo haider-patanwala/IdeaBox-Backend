@@ -7,7 +7,7 @@ let api;
 let uid;
 let authToken;
 
-describe("Organization API", () => {
+describe.only("Organization API", () => {
   before("Initialize API in before block", (done) => {
     server
       .then((resultedApp) => {
@@ -109,9 +109,9 @@ describe("Organization API", () => {
         expect(response.body).to.have.property("data");
         expect(response.body).to.have.property("message", "Deleted organization successfully.");
         expect(response.body).to.have.property("errors", null);
-
-        await deletePromise;
-        await organizationModel.deleteMany({});
       });
+    // remember to call the promise and delete method outside the promise definition over here
+    await deletePromise;
+    await organizationModel.deleteMany({});
   });
 });
