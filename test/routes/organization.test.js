@@ -2,6 +2,9 @@ const request = require("supertest"); // for HTTP requests testing
 const { expect } = require("chai");
 const server = require("../../server");
 const organizationModel = require("../../models/organization"); // only for before and after hooks
+require("dotenv").config();
+
+const orgAuthToken = process.env.ORG_AUTH_TOKEN;
 
 let api;
 let uid;
@@ -47,6 +50,32 @@ describe("Organization API", () => {
       .catch(done);
   });
 
+  // test cases for GET routes
+  it("GET all organizations by searching name", (done) => {
+    api.get("/organizations?name=squa")
+      .then((response) => {
+        expect(response.status).to.equal(200);
+
+        expect(response.body.data[0]).to.has.property("name", "Square TechSolutions");
+
+        done();
+      })
+      .catch(done);
+  });
+
+  // test cases for GET routes
+  it("GET all organizations by searching domain and sorting", (done) => {
+    api.get("/organizations?domain=solutions&sort=createdAt")
+      .then((response) => {
+        expect(response.status).to.equal(200);
+
+        expect(response.body.data[0]).to.has.property("domain", "Technology Solutions");
+
+        done();
+      })
+      .catch(done);
+  });
+
   // test cases for POST route
   it("POST a organization", (done) => {
     api.post("/organizations/auth/register")
@@ -74,6 +103,122 @@ describe("Organization API", () => {
       })
       .catch((e) => done(e));
   });
+
+  // test cases for POST route
+  it("POST a organization without password", (done) => {
+    api.post("/organizations/auth/register")
+      .field("name", "Raw Eng")
+      .then((response) => {
+        expect(response.status).to.equal(400);
+
+        expect(response.body).to.have.property("message", "Organization registration failed. Please provide a password.");
+        expect(response.body).to.not.have.property("data");
+        expect(response.body).to.have.property("error", "password : Password should be atleast 8 and maximum 16 characters");
+
+        done();
+      })
+      .catch((e) => done(e));
+  });
+
+  // test cases for POST route
+  it("POST a organization with invalid password", (done) => {
+    api.post("/organizations/auth/register")
+      .field("name", "Raw Eng")
+      .field("password", "12345")
+      .then((response) => {
+        expect(response.status).to.equal(400);
+
+        expect(response.body).to.have.property("message", "Organization registration failed. Please check your inputs.");
+        expect(response.body).to.not.have.property("data");
+        expect(response.body).to.have.property("error", "password : Password should be atleast 8 and maximum 16 characters");
+
+        done();
+      })
+      .catch((e) => done(e));
+  });
+
+  // test cases for LOGIN route
+  it("LOGIN a organization", (done) => {
+    api.post("/organizations/auth/login")
+      .field("uid", uid)
+      .field("password", "12345678")
+      .then((response) => {
+        expect(response.status).to.equal(200);
+
+        expect(response.body).to.have.property("message", "Organization logged in successfully.");
+        expect(response.body).to.have.property("data");
+        expect(response.body).to.have.property("errors", null);
+
+        done();
+      })
+      .catch((e) => done(e));
+  });
+
+  // test cases for LOGIN route
+  it("LOGIN a organization with wrong uid", (done) => {
+    api.post("/organizations/auth/login")
+      .field("uid", `${uid}xx`)
+      .field("password", "12345678")
+      .then((response) => {
+        expect(response.status).to.equal(422);
+
+        expect(response.body).to.have.property("message", "Error logging in Organization.");
+        expect(response.body).to.not.have.property("data");
+        expect(response.body).to.have.property("error", "Error: Organization not found.");
+
+        done();
+      })
+      .catch((e) => done(e));
+  });
+
+  // test cases for LOGIN route
+  it("LOGIN a organization with wrong password", (done) => {
+    api.post("/organizations/auth/login")
+      .field("uid", uid)
+      .field("password", "123456789")
+      .then((response) => {
+        expect(response.status).to.equal(422);
+
+        expect(response.body).to.have.property("message", "Error logging in Organization.");
+        expect(response.body).to.not.have.property("data");
+        expect(response.body).to.have.property("error", "Error: Incorrect Password.");
+
+        done();
+      })
+      .catch((e) => done(e));
+  });
+
+  // test cases for GET routes
+  it("GET specific organization", (done) => {
+    api.get(`/organizations/${uid}`)
+      .then((response) => {
+        expect(response.status).to.equal(200);
+
+        expect(response.body).to.have.property("message", "Fetched organization successfully");
+        expect(response.body).to.has.property("data");
+        expect(response.body).to.has.property("errors");
+        expect(response.body.errors).to.equal(null);
+
+        done();
+      })
+      .catch(done);
+  });
+
+  // test cases for GET routes
+  it("GET specific organization with wrong uid", (done) => {
+    api.get(`/organizations/${uid}xx`)
+      .then((response) => {
+        expect(response.status).to.equal(422);
+
+        expect(response.body).to.have.property("message", "Error fetching organization.");
+        expect(response.body).to.not.have.property("data");
+        expect(response.body).to.has.property("error", "Error: Organization not found.");
+
+        done();
+      })
+      .catch(done);
+  });
+
   // test cases for PATCH route
   it("PATCH the organization", (done) => {
     api.patch(`/organizations/${uid}`)
@@ -85,6 +230,22 @@ describe("Organization API", () => {
         console.log("PATCH uid-----------", uid);
         console.log("UPDATED --------------", response.body);
 
+        expect(response.status).to.equal(200);
+
+        expect(response.body).to.have.property("message");
+        expect(response.body).to.have.property("message", "Updated organization successfully.");
+        expect(response.body).to.have.property("errors", null);
+        done();
+      })
+      .catch((e) => done(e));
+  });
+
+  // test cases for PATCH route
+  it("PATCH the organization wihtout file", (done) => {
+    api.patch(`/organizations/${uid}`)
+      .set("authorization", authToken)
+      .field("domain", "IT")
+      .then((response) => {
         expect(response.status).to.equal(200);
 
         expect(response.body).to.have.property("message");
@@ -124,5 +285,20 @@ describe("Organization API", () => {
       .catch((error) => {
         console.log("Error in deleting the recently added document------->", error);
       });
+  });
+
+  // test cases for DELETE route
+  it("DELETE organization with wrong uid", async () => {
+    const deletePromise = api.delete(`/organizations/${uid}xx`)
+      .set("authorization", orgAuthToken)
+      .then(async (response) => {
+        expect(response.status).to.equal(400);
+
+        expect(response.body).to.not.have.property("data");
+        expect(response.body).to.have.property("message", "Error deleting organization.");
+        expect(response.body).to.have.property("error", "Error: Organization not found");
+      });
+    // remember to call the promise and delete method outside the promise definition over here
+    await deletePromise;
   });
 });
