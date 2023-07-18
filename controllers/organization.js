@@ -9,7 +9,10 @@ const secret = process.env.JWT_SECRET;
 const postOrganization = (res, next, organization, file) => {
   Organization.create(organization)
     .then((document) => {
-      const token = jwt.sign(document.uid, secret);
+      const uidObj = {
+        uid: document.uid,
+      };
+      const token = jwt.sign(uidObj, secret);
       res.status(201).json({
         message: "Organization created successfully.",
         data: {
