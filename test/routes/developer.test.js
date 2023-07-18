@@ -10,7 +10,7 @@ let api;
 let uid;
 let authToken;
 
-describe.only("Developer API", () => {
+describe("Developer API", () => {
   before("Initialize API in before block", (done) => {
     server
       .then((resultedApp) => {
@@ -306,6 +306,36 @@ describe.only("Developer API", () => {
         expect(response.body).to.have.property("message");
         expect(response.body).to.have.property("message", "Developer updated successfully.");
         expect(response.body).to.have.property("errors", null);
+        done();
+      })
+      .catch(done);
+  });
+
+  // test cases for isDeveloperAuthenticated error
+  it("PATCH a developer with expired access_token", (done) => {
+    api.patch(`/developers/${uid}`)
+      .set("authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1AZ21haWwuY29tIiwiaWF0IjoxNjg5NzE2MTQ5fQ.nx5ilISQCZpZPjd5g6_EHMHiG83-SzD_wbtpugyFxFs")
+      .field("openToWork", false)
+      .then((response) => {
+        console.log("UPDATED with expired access_token--------------", response.body);
+        expect(response.status).to.equal(422);
+
+        expect(response.body).to.have.property("message", "Error in authentication operation.");
+        expect(response.body).to.have.property("error", "Error: Session expired. Please login again..");
+        done();
+      })
+      .catch(done);
+  });
+  // test cases for isDeveloperAuthenticated error
+  it("PATCH a developer without access_token", (done) => {
+    api.patch(`/developers/${uid}`)
+      .field("openToWork", false)
+      .then((response) => {
+        console.log("UPDATED with expired access_token--------------", response.body);
+        expect(response.status).to.equal(400);
+
+        expect(response.body).to.have.property("redirect", false);
+
         done();
       })
       .catch(done);
