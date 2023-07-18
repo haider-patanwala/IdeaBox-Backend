@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
+const cors = require("cors");
 const router = require("./routes/index");
 const connectToDatabase = require("./config/db");
 const errorHandler = require("./middleware/errorHandler");
@@ -41,6 +42,8 @@ module.exports = Promise.resolve()
     // Middleware 2 - for sometimes, when we get body in urlencoded format
     // enables Express.js to automatically parse this URL-encoded data and make it available in the req.body object
     app.use(express.urlencoded({ extended: true }));
+
+    app.use(cors());
 
     // Middleware 3 -
     // it is a convenient handle file uploads in your Express app
