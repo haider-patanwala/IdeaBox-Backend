@@ -25,5 +25,9 @@
     "nodemon": "^2.0.22",
     "nyc": "^15.1.0",
     "supertest": "^6.3.3"
+  },
+  "__comment__": "The following engines key is for render platform. It's purpose is to provide a minimum node version to the build environnment.",
+  "engines": {
+    "node": ">=14.20.1"
   }
 }
