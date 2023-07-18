@@ -118,9 +118,20 @@ describe("Project API", () => {
         expect(response.body).to.have.property("data");
         expect(response.body).to.have.property("message", "Deleted project successfully.");
         expect(response.body).to.have.property("errors", null);
+      });
+    await deletePromise;
 
-        await deletePromise;
-        await projectModel.deleteMany({});
+    // await projectModel.deleteMany({});
+
+    // deleting just the recently added one which was inserted by our test suite.
+    // We need atleast one project in test db as the access_token of project is used in the proposal.test.js & review.test.js
+    // if all documents are deleted then there would be nothing to verify the org's access_token upon in proposal.test.js & review.test.js
+    await projectModel.findOneAndDelete({}, { sort: { _id: -1 } })
+      .then((result) => {
+        console.log("Deleting the recently added document------->", result);
+      })
+      .catch((error) => {
+        console.log("Error in deleting the recently added document------->", error);
       });
   });
 });
