@@ -159,6 +159,22 @@ describe("Project API", () => {
   });
 
   // test cases for PATCH route
+  it("PATCH the project with wrong uid", (done) => {
+    api.patch(`/projects/${uid}xx`)
+      .set("authorization", authToken)
+      .field("featured", false)
+      .then((response) => {
+        expect(response.status).to.equal(422);
+
+        expect(response.body).to.have.property("message");
+        expect(response.body).to.have.property("message", "Error updating project.");
+        expect(response.body).to.have.property("error", "Error: Project not found.");
+        done();
+      })
+      .catch((e) => done(e));
+  });
+
+  // test cases for PATCH route
   it("PATCH the project", (done) => {
     api.patch(`/projects/${uid}`)
       .set("authorization", authToken)

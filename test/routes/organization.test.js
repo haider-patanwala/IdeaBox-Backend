@@ -241,6 +241,21 @@ describe("Organization API", () => {
   });
 
   // test cases for PATCH route
+  it("PATCH the organization with wrong uid", (done) => {
+    api.patch(`/organizations/${uid}xx`)
+      .set("authorization", authToken)
+      .field("domain", "IT")
+      .then((response) => {
+        expect(response.status).to.equal(422);
+
+        expect(response.body).to.have.property("message", "Error updating organization.");
+        expect(response.body).to.have.property("error", "Error: Organization not found.");
+        done();
+      })
+      .catch((e) => done(e));
+  });
+
+  // test cases for PATCH route
   it("PATCH the organization wihtout file", (done) => {
     api.patch(`/organizations/${uid}`)
       .set("authorization", authToken)

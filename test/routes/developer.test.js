@@ -326,6 +326,7 @@ describe("Developer API", () => {
       })
       .catch(done);
   });
+
   // test cases for isDeveloperAuthenticated error
   it("PATCH a developer without access_token", (done) => {
     api.patch(`/developers/${uid}`)
@@ -335,6 +336,22 @@ describe("Developer API", () => {
         expect(response.status).to.equal(400);
 
         expect(response.body).to.have.property("redirect", false);
+
+        done();
+      })
+      .catch(done);
+  });
+
+  // test cases for isDeveloperAuthenticated error
+  it("PATCH a developer with wrong uid", (done) => {
+    api.patch(`/developers/${uid}xx`)
+      .set("authorization", `${authToken}`)
+      .field("openToWork", false)
+      .then((response) => {
+        expect(response.status).to.equal(422);
+
+        expect(response.body).to.have.property("message", "Error updating developer.");
+        expect(response.body).to.have.property("error", "Error: Developer not found.");
 
         done();
       })
