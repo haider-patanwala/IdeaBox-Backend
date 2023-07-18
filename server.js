@@ -43,9 +43,11 @@ module.exports = Promise.resolve()
     // enables Express.js to automatically parse this URL-encoded data and make it available in the req.body object
     app.use(express.urlencoded({ extended: true }));
 
+    // Middlware 3 -
+    // needed this middleware because the fetch() methods on the frontend was getting error of `blocked by CORS policy`
     app.use(cors());
 
-    // Middleware 3 -
+    // Middleware 4 -
     // it is a convenient handle file uploads in your Express app
     // It simplifies the process of accepting files sent as part of a multipart/form-data request.
     app.use(fileUpload({
@@ -58,7 +60,7 @@ module.exports = Promise.resolve()
     app.use("/reviews", router.reviewRouter);
     app.use("/proposals", router.proposalRouter);
 
-    // Middlware 4 - A global error handler
+    // Middlware 5 - A global error handler
     // do not call like ()
     // if there are syntactical erros in the req.body then even beffore the request gets process, the body error is handled over by this middleware otherwise the server get freeze due to unhandled error.... etc etc such type of unexpected errors can be handled by this middleware
     app.use(errorHandler);
