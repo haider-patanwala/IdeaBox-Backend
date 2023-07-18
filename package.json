@@ -3,8 +3,8 @@
     "start": "node server.js",
     "start:dev": "npx nodemon server.js",
     "__comment__": "By adding --timeout 20000, the timeout limit for all the test cases will be set to 20000ms (20 seconds) since there were timeout errors of 2000s for the long CRUD operations involving file upload and while generating nyc coverage report needed extra time...",
-    "test": "mocha --timeout 20000 --exit ./test/**/*.test.js",
-    "test:cov": "nyc --reporter html --reporter text -t coverage mocha --exit ./test/**/*.test.js"
+    "test": "mocha --timeout 25000 --exit ./test/**/*.test.js",
+    "test:cov": "nyc --reporter html --reporter text -t coverage mocha --timeout 25000 --exit ./test/**/*.test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
