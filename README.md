@@ -2,41 +2,24 @@
 
 Developing NodeJS environment `v18.16.0`
 
-Initialized the app in following manner : 
+![Alt text](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![Alt text](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
+![Alt text](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+<!-- <br>
 
-```bash
-npm install express
-npm install --save-dev nodemon
-touch server.js
-touch .gitignore
-npm i mongoose
-npm i dotenv
-npm i eslint 
-```
-
-Did setup of eslint with following options 
-```bash
-npm init @eslint/config
-```
-
-```bash
-✔ How would you like to use ESLint? · To check syntax, find problems, and enforce code style
-✔ What type of modules does your project use? · commonjs
-✔ Which framework does your project use? · none
-✔ Does your project use TypeScript? · No 
-✔ Where does your code run? · node
-✔ How would you like to define a style for your project? · guide
-✔ Which style guide do you want to follow? · airbnb
-✔ What format do you want your config file to be in? · JavaScript
-```
+![Alt text](https://img.shields.io/badge/testing%20library-323330?style=for-the-badge&logo=testing-library&logoColor=red)
+![Alt text](https://img.shields.io/badge/mocha.js-323330?style=for-the-badge&logo=mocha&logoColor=Brown)
+![Alt text](https://img.shields.io/badge/chai.js-323330?style=for-the-badge&logo=chai&logoColor=red) -->
 
 ---
+
 ## What is Project Listing App ?
 
-> An all-in-one project listing app with a powerful backend, enabling seamless browsing of projects, businesses, and developers while offering extensive project details and developer profiles.
+An all-in-one project listing app with a powerful backend, enabling seamless browsing of projects, businesses, and developers while offering extensive project details and developer profiles.
+
 ---
 
-## What are the basic functional requirements of the app ? 
+### What are the basic functional requirements of the app ? 
 
 *A functional requirement (FR) defines the specific services and behaviors that the software system or its components must provide, encompassing inputs, system behavior, and corresponding outputs.*
 
@@ -111,33 +94,6 @@ npm init @eslint/config
 - [x] Update specific review - *Protected* <span style="color:yellow">PATCH</span> `/reviews/:id`
 - [x] Delete specific review - *Protected* <span style="color:red">DELETE</span> `/reviews/:id`
 
-
----
-
-## About Backend Development :
-
-#### Main Project Structure 
-
-1. `server.js` - Entry point for the backend server
-2. `/routes` - Folder for all routes
-3. `/models` - Folder for all schemas 
-4. `/utils` - Folder for extra utility functions
-5. `/middleware` - Folder for middlewares
-6. `/config` - Folder for any configuration setups
-7. `/controllers` - To manage some business logic out of routes.
-
----
-
-#### Other setups :
-
-```bash
-npm i express-fileupload
-npm i express-validator
-npm i cloudinary
-npm i bcryptjs 
-npm i jsonwebtoken
-```
-
 ---
 
 ### Some Standard HTTP codes used throughout the project : 
@@ -160,7 +116,7 @@ npm i jsonwebtoken
 3. [x] Sorting & filtering : Approtiate endpoints are powered with the sorting and filtering quering parameters.
 4. [x] Verify user paramters : Specific fields like email and password and verified by express-validator.
 5. [x] Security : The API's routes are protected with authentication middlwares and SSL by hosting service.
-6. [x] Documentation  
+6. [x] Documentation with developer [guide](Learnings.md) and [learnings](Learnings.md).
 
 ---
 
@@ -179,13 +135,21 @@ npm i jsonwebtoken
 - [x] Use SSL (done with the help of hosting)
 - [x] Secure the API (with several middlewares)
 
+---
+
+### API Testing :
+
+The API is tested with `mocha`, `chai` and `supertest` libraries with overal coverage of more than 90%.
+
+🛠 <a href="https://meetmakwana19.github.io/projekto-testing-coverage/" target="_blank">Here</a> is the detailed result of the testing.
+
+---
+
+👉🏻👉🏻 Please refer [guide](BUILD_GUIDE.md) for getting started with the application development
 
 ---
 
 #### Todo :
 
-developer schema :
-1. relation "organization" (new/option)...
-2. add "projects" - role.(figure out this)
-3. Standardized response messages.
-4. Ask sir about async/await vs done promises in testing and veirfy the usage of aysnc/await in delete test cases.
+1. Standardized response messages.
+2. Ask sir about async/await vs done promises in testing and veirfy the usage of aysnc/await in delete test cases.

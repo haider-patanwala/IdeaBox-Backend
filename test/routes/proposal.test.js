@@ -1,7 +1,7 @@
 const superTest = require("supertest");
 const { expect } = require("chai");
 const server = require("../../server");
-// const proposalModel = require("../../models/proposal");
+const proposalModel = require("../../models/proposal");
 require("dotenv").config();
 
 const devAuthToken = process.env.DEV_AUTH_TOKEN;
@@ -94,6 +94,23 @@ describe("Proposals API", () => {
       .catch(done);
   });
 
+  // test cases for PATCH route
+  it("PATCH the proposal with wrong uid", (done) => {
+    api.patch(`/proposals/${uid}xx`)
+      .set("authorization", devAuthToken)
+      .field("developer", devId)
+      .field("project", projId)
+      .then((response) => {
+        expect(response.status).to.equal(422);
+
+        expect(response.body).to.have.property("message", "Error updating proposal.");
+        expect(response.body).to.have.property("error", "Error: Proposal not found.");
+
+        done();
+      })
+      .catch(done);
+  });
+
   it("DELETE the proposal", async () => {
     const deletePromise = api.delete(`/proposals/${uid}`)
       .set("authorization", devAuthToken)
@@ -103,6 +120,20 @@ describe("Proposals API", () => {
         expect(response.body).to.have.property("message");
         expect(response.body).to.have.property("message", "Deleted proposal successfully.");
         expect(response.body).to.have.property("errors", null);
+      });
+    await deletePromise;
+
+    // we dont mind deleting the dummy records of proposals as its not getting used anywhere else yet.
+    await proposalModel.deleteMany({});
+  });
+  it("DELETE the proposal with wrong uid", async () => {
+    const deletePromise = api.delete(`/proposals/${uid}xxx`)
+      .set("authorization", devAuthToken)
+      .then((response) => {
+        expect(response.status).to.equal(422);
+
+        expect(response.body).to.have.property("message", "Error deleting proposal.");
+        expect(response.body).to.have.property("error", "Error: Proposal not found.");
       });
     await deletePromise;
 

@@ -65,6 +65,7 @@ const developerSchema = new mongoose.Schema(
     ],
     profile_pic: {
       type: String,
+      default: "https://filestore.community.support.microsoft.com/api/images/8a86b79d-4e94-4c61-ace1-837ffd763978?upload=true&fud_access=wJJIheezUklbAN2ppeDns8cDNpYs3nCYjgitr%2bfFBh2dqlqMuW7np3F6Utp%2fKMltnRRYFtVjOMO5tpbpW9UyRAwvLeec5emAPixgq9ta07Dgnp2aq5eJbnfd%2fU3qhn5498QChOTHl3NpYS7xR7zASsaF20jo4ICSz2XTm%2b3GDR4XitSm7nHRR843ku7uXQ4oF6innoBxMaSe9UfrAdMi7owFKjdP9m1UP2W5KAtfQLMLSmPiAERG6018NyFjkv9RcFHu9O6KllurYDUsXaeUxYQXm%2fHJEL5CEdOQFaT%2bw0DWSi9SgYLd8HcOteeSztROdS4r9d%2fBOkhgldwjGpnuWoamOxEdeBGmbTX2%2ffDoyyZUPtXoMphbsziMW9PBMIN7f4bxd27UGDzCevghleAoOvW%2fvHKo3mpQwEdhi%2f3WF8U%3d",
     },
     technical_role: { // like engineer/researcher/designer.....
       type: String,
