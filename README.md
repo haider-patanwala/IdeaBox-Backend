@@ -137,6 +137,14 @@ An all-in-one project listing app with a powerful backend, enabling seamless bro
 
 ---
 
+### API Testing :
+
+The API is tested with `mocha`, `chai` and `supertest` libraries with overal coverage of more than 90%.
+
+🛠 <a href="https://meetmakwana19.github.io/projekto-testing-coverage/" target="_blank">Here</a> is the detailed result of the testing.
+
+---
+
 👉🏻👉🏻 Please refer [guide](BUILD_GUIDE.md) for getting started with the application development
 
 ---
