@@ -35,6 +35,7 @@ const organizationSchema = new mongoose.Schema(
     }],
     banner_img: {
       type: "String",
+      default: "https://res.cloudinary.com/dulptytgu/image/upload/v1689547610/vdgzaagklqgqjpnzlyyl.jpg",
     },
     password: {
       type: "String",
