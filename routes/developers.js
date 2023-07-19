@@ -52,7 +52,7 @@ router.route("/")
 
     // had to put the find method in a variable as we needed to put sort over it again.
     // `populate` is used to fetch the foreign key referenced document in the find response based on the keys passed as an argument to the method.
-    let fetchedData = Developer.find(queryObject).populate("dev_organization").populate("dev_projects");
+    let fetchedData = Developer.find(queryObject).select("-password").populate("dev_organization", "name uid").populate("dev_projects");
 
     // if user has written `?sort=fname,city` with multiple sort conditions in URL :
     if (sort) { // FOR SORTING BASE ON ANY KEY
@@ -174,7 +174,7 @@ router.route("/auth/login")
 router.route("/:uid")
 
   .get((req, res, next) => {
-    Developer.findOne({ uid: req.params.uid }).populate("dev_organization").populate("dev_projects")
+    Developer.findOne({ uid: req.params.uid }).select("-password").populate("dev_organization").populate("dev_projects")
       .then((document) => {
         if (!document) {
           throw Error("Developer not found");
