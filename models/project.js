@@ -75,6 +75,10 @@ const projectSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    open: {  // open for development ? 
+      type: Boolean, 
+      default: true, 
+    }
   },
   {
     timestamps: true, // to create created_at & updated_at fields
