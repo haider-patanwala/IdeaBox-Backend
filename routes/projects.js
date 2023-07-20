@@ -17,7 +17,7 @@ router.route("/")
 
     // destructuring query keys from URL.
     const {
-      title, techStack, board, featured, sort,
+      title, techStack, board, featured, open, sort,
     } = req.query;
     // req.query helps for finding only those specific documents which are queried from the URL like /projects?title=...&board=agile
 
@@ -32,6 +32,9 @@ router.route("/")
     if (board) { // FOR CASE-INSENSITIVE SEARCHING
       queryObject.board = { $regex: board, $options: "i" };
     }
+    if (open) { // FOR CASE-INSENSITIVE SEARCHING
+      queryObject.open = open;
+    }
     if (featured) { // FOR FILTERING
       // this is a boolean field so no need to worry about making it case insensitive as boolean always should be case sensitive.
       queryObject.featured = featured;
@@ -39,7 +42,7 @@ router.route("/")
 
     // had to put the find method in a variable as we needed to put sort over it again.
     // `populate` is used to fetch the foreign key referenced document in the find response based on the keys passed as an argument to the method.
-    let fetchedData = Project.find(queryObject).populate("lead").populate("proj_organization");
+    let fetchedData = Project.find(queryObject).select("title uid").populate("lead").populate("proj_organization");
 
     // if user has written `?sort=createdAt,updatedAt` with multiple sort conditions in URL :
     if (sort) { // FOR SORTING BASE ON ANY KEY
