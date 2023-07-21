@@ -26,7 +26,7 @@ router.route("/")
     const { _id, name, domain, sort } = req.query;
     // req.query helps for finding only those specific documents which are queried from the URL like /organizations?name=raw&domain=IT
 
-    if (name) { // FOR SEARCHING
+    if (_id) { // FOR SEARCHING
       queryObject._id = _id;
     }
     if (name) { // FOR CASE-INSENSITIVE SEARCHING

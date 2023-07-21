@@ -32,7 +32,7 @@ router.route("/")
     if (board) { // FOR CASE-INSENSITIVE SEARCHING
       queryObject.board = { $regex: board, $options: "i" };
     }
-    if (open) { // FOR SEARCHING
+    if (_id) { // FOR SEARCHING
       queryObject._id = _id;
     }
     if (open) { // FOR FILTERING

@@ -45,7 +45,7 @@ router.route("/")
     if (qualification) { // FOR CASE-INSENSITIVE SEARCHING
       queryObject.qualification = { $regex: qualification, $options: "i" };
     }
-    if (openToWork) { // FOR SEARCHING
+    if (_id) { // FOR SEARCHING
       queryObject._id = _id;
     }
     if (openToWork) { // FOR FILTERING
