@@ -138,7 +138,7 @@ router.route("/auth/login")
           message: "Organization logged in successfully.",
           data: {
             access_token: token,
-            developer: document,
+            organization: document,
           },
           errors: null,
         });
