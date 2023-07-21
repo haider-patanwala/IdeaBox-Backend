@@ -17,7 +17,7 @@ router.route("/")
 
     // destructuring query keys from URL.
     const {
-      title, techStack, board, featured, open, sort,
+      _id, title, techStack, board, featured, open, sort,
     } = req.query;
     // req.query helps for finding only those specific documents which are queried from the URL like /projects?title=...&board=agile
 
@@ -31,6 +31,9 @@ router.route("/")
     }
     if (board) { // FOR CASE-INSENSITIVE SEARCHING
       queryObject.board = { $regex: board, $options: "i" };
+    }
+    if (open) { // FOR SEARCHING
+      queryObject._id = _id;
     }
     if (open) { // FOR FILTERING
       queryObject.open = open;

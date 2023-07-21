@@ -26,7 +26,7 @@ router.route("/")
     // they'll be passes like this --> `?city=mumbai` or `?openToWork=true` or `?sort=fname,city`
     // so destructuring just the keys.
     const {
-      openToWork, city, sort, fname, lname, qualification,
+      _id, openToWork, city, sort, fname, lname, qualification,
     } = req.query;
     // req.query helps for finding only those specific documents which are queried from the URL like /developers?fname=Meet&fname=Tarun
 
@@ -44,6 +44,9 @@ router.route("/")
     }
     if (qualification) { // FOR CASE-INSENSITIVE SEARCHING
       queryObject.qualification = { $regex: qualification, $options: "i" };
+    }
+    if (openToWork) { // FOR SEARCHING
+      queryObject._id = _id;
     }
     if (openToWork) { // FOR FILTERING
       // this is a boolean field so no need to worry about making it case insensitive as boolean always should be case sensitive.
