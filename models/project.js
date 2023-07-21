@@ -36,6 +36,7 @@ const projectSchema = new mongoose.Schema(
     },
     thumbnail: {
       type: String,
+      default: "https://res.cloudinary.com/dulptytgu/image/upload/v1689547610/vdgzaagklqgqjpnzlyyl.jpg",
     },
     timeframe: {
       type: String,
