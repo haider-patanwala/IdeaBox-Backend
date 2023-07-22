@@ -113,7 +113,7 @@ router.route("/")
 router.route("/:uid")
 
   .get((req, res, next) => {
-    Project.findOne({ uid: req.params.uid })
+    Project.findOne({ uid: req.params.uid }).populate("lead", "uid fname lname email profile_pic").populate("proj_organization", "uid name banner_img").populate("members", "uid fname lname email profile_pic")
       .then((document) => {
         if (!document) {
           throw Error("Project not found");
