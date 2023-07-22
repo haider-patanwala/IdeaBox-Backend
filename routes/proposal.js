@@ -6,7 +6,7 @@ const ApiError = require("../utils/ApiError");
 router.route("/")
   // roleBasedAuthentication is a middlware powered by other 2 middlwares to conditionally verfy the authToken.
   .get(roleBasedAuthentication, (req, res, next) => {
-    Proposal.find().populate("developer").populate("project")
+    Proposal.find().populate("developer", "fname lname email profile_pic uid").populate("project", "title uid thumbnail")
       .then((documents) => {
         if (documents.length === 0) {
           // returns response of empty array with 'successful request' 200 code
