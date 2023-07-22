@@ -26,5 +26,6 @@ module.exports = {
     quotes: ["off", "double"],
     "no-console": 0,
     "max-len": 0, // for comments length
+    "no-underscore-dangle": "off", // for _id
   },
 };

@@ -23,7 +23,9 @@ router.route("/")
     const queryObject = {};
 
     // destructuring query keys from URL.
-    const { _id, name, domain, sort } = req.query;
+    const {
+      _id, name, domain, sort,
+    } = req.query;
     // req.query helps for finding only those specific documents which are queried from the URL like /organizations?name=raw&domain=IT
 
     if (_id) { // FOR SEARCHING

@@ -55,6 +55,7 @@ router.route("/")
 
     // had to put the find method in a variable as we needed to put sort over it again.
     // `populate` is used to fetch the foreign key referenced document in the find response based on the keys passed as an argument to the method.
+    // sending only the selected fields in the 2nd arg of populate()
     let fetchedData = Developer.find(queryObject).select("-password").populate("dev_organization", "name uid").populate("dev_projects");
 
     // if user has written `?sort=fname,city` with multiple sort conditions in URL :
