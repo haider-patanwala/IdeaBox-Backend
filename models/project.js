@@ -66,6 +66,10 @@ const projectSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "proposals",
     }],
+    members: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "developers",
+    }],
     project_type: { // one-time/monthly/yearly
       type: String,
     },
@@ -76,10 +80,10 @@ const projectSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    open: {  // open for development ? 
-      type: Boolean, 
-      default: true, 
-    }
+    open: { // open for development ?
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true, // to create created_at & updated_at fields
