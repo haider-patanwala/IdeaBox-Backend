@@ -51,9 +51,9 @@ An all-in-one project listing app with a powerful backend, enabling seamless bro
   >  - [x] FILTER based on '*openToWork*' - <span style="color:deepskyblue">GET</span> `/developers?openToWork=true`
 - [x] Register new Developer - <span style="color:springgreen">POST</span> `/developers/auth/register` - *generates authToken too.*
 - [x] Login Developer - <span style="color:springgreen">POST</span> `/developers/auth/login` - *generates authToken too.*
-- [x] Retrieve specific Developer - <span style="color:deepskyblue">GET</span> `/developers/:id`
-- [x] Update specific Developer - *Protected* <span style="color:yellow">PATCH</span> `/developers/:id`
-- [x] Delete specific Developer - *Protected* <span style="color:red">DELETE</span> `/developers/:id`
+- [x] Retrieve specific Developer - <span style="color:deepskyblue">GET</span> `/developers/:uid`
+- [x] Update specific Developer - *Protected* <span style="color:yellow">PATCH</span> `/developers/:uid`
+- [x] Delete specific Developer - *Protected* <span style="color:red">DELETE</span> `/developers/:uid`
 
 ### Organization
 
@@ -63,9 +63,9 @@ An all-in-one project listing app with a powerful backend, enabling seamless bro
   >    - Or something more complex like `?domain=it&name=raw`
 - [x] Register new Organization - <span style="color:springgreen">POST</span> `/organizations/auth/register` - *generates authToken too.*
 - [x] Login Organization - <span style="color:springgreen">POST</span> `/organizations/auth/login` - *generates authToken too.*
-- [x] Retrive specific Organization - <span style="color:deepskyblue">GET</span> `/organizations/:id`
-- [x] Update specific Organization - *Protected* <span style="color:yellow">PATCH</span> `/organizations/:id`
-- [x] Delete specific Organization - *Protected* <span style="color:red">DELETE</span> `/organizations/:id`
+- [x] Retrive specific Organization - <span style="color:deepskyblue">GET</span> `/organizations/:uid`
+- [x] Update specific Organization - *Protected* <span style="color:yellow">PATCH</span> `/organizations/:uid`
+- [x] Delete specific Organization - *Protected* <span style="color:red">DELETE</span> `/organizations/:uid`
 
 ### Project
 
@@ -75,24 +75,24 @@ An all-in-one project listing app with a powerful backend, enabling seamless bro
   >  - [x] FILTER based on '*featured*' - <span style="color:deepskyblue">GET</span> `/developers?featured=true`
   >    - Or something more complex like `?projects?projects?board=kan&featured=false`
 - [x] Create new Project - *Organization Protected* <span style="color:springgreen">POST</span> `/projects`
-- [x] Retrive specific Project - <span style="color:deepskyblue">GET</span> `/projects/:id`
-- [x] Update specific Project - *Organization Protected* <span style="color:yellow">PATCH</span> `/projects/:id`
-- [x] Delete specific Project - *Organization Protected* <span style="color:red">DELETE</span> `/projects/:id`
+- [x] Retrive specific Project - <span style="color:deepskyblue">GET</span> `/projects/:uid`
+- [x] Update specific Project - *Organization Protected* <span style="color:yellow">PATCH</span> `/projects/:uid`
+- [x] Delete specific Project - *Organization Protected* <span style="color:red">DELETE</span> `/projects/:uid`
 
 ### Proposals
 
 - [x] Retrieve all proposals - *Dev+Org Protected* <span style="color:deepskyblue">GET</span> `/proposals`
 - [x] Create new proposal - *Dev Protected* <span style="color:springgreen">POST</span> `/proposals`
-- [x] Update specific proposal - *Dev Protected* <span style="color:yellow">PATCH</span> `/proposals/:id`
-- [x] Delete specific proposal - *Dev Protected* <span style="color:red">DELETE</span> `/proposals/:id`
+- [x] Update specific proposal - *Dev Protected* <span style="color:yellow">PATCH</span> `/proposals/:uid`
+- [x] Delete specific proposal - *Dev Protected* <span style="color:red">DELETE</span> `/proposals/:uid`
 
 ### Review
 
 - [x] Retrieve all reviews - <span style="color:deepskyblue">GET</span> `/reviews`
   >  - [x] SORT asc/desc based on '*any*' parameter  - <span style="color:deepskyblue">GET</span> `/reviews?sort=rating` or `=-rating` for descending.
 - [x] Create new review - *Dev+Org Protected* <span style="color:springgreen">POST</span> `/reviews`
-- [x] Update specific review - *Protected* <span style="color:yellow">PATCH</span> `/reviews/:id`
-- [x] Delete specific review - *Protected* <span style="color:red">DELETE</span> `/reviews/:id`
+- [x] Update specific review - *Protected* <span style="color:yellow">PATCH</span> `/reviews/:uid`
+- [x] Delete specific review - *Protected* <span style="color:red">DELETE</span> `/reviews/:uid`
 
 ---
 
