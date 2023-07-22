@@ -6,8 +6,33 @@ const ApiError = require("../utils/ApiError");
 router.route("/")
   // roleBasedAuthentication is a middlware powered by other 2 middlwares to conditionally verfy the authToken.
   .get(roleBasedAuthentication, (req, res, next) => {
+    let queryObject;
+    const { developer, project } = req.query;
+
+    // FILTERING BASED ON 2 KEYS - developer and projects
+    if (developer) {
+      queryObject = developer;
+    }
+    if (project) {
+      queryObject = project;
+    }
+
     Proposal.find().populate("developer", "fname lname email profile_pic uid").populate("project", "title uid thumbnail")
       .then((documents) => {
+        // once we get all the documents the filter the data based on query parameter key and value
+        let filteredDocs;
+        if (queryObject) {
+          filteredDocs = documents.filter((doc) => {
+            if (developer) { // FILTER SPECIFIC DEV
+              return doc.developer.uid === queryObject;
+            }
+            // FILTER SPECIFIC PROJECT
+            return doc.project.uid === queryObject;
+          });
+        } else {
+          // NO FILTER
+          filteredDocs = documents;
+        }
         if (documents.length === 0) {
           // returns response of empty array with 'successful request' 200 code
           res.status(200).json({
@@ -18,7 +43,7 @@ router.route("/")
         } else {
           res.status(200).json({
             message: "Fetched proposals successfully.",
-            data: documents,
+            data: filteredDocs,
             errors: null,
           });
         }
